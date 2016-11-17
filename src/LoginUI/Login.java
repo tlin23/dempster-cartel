@@ -94,14 +94,14 @@ public class Login{
 		//login button event handler
 		loginButton.addActionListener(loginAsListener);
 		
-//		ActionListener regListener = new ActionListener(){
-//			public void actionPerformed(ActionEvent e){
-//				new registrationInterface(con);
-//				mainFrame.dispose();
-//			}
-//		};
-//		//reg button event handler
-//		regButton.addActionListener(regListener);
+		ActionListener regListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new registrationInterface(con);
+				mainFrame.dispose();
+			}
+		};
+		//reg button event handler
+		regButton.addActionListener(regListener);
 		
 		// closing window
 		mainFrame.addWindowListener(new WindowAdapter(){
