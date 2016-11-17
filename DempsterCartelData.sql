@@ -1,3 +1,4 @@
+ /* DROP ALL TABLE*/
 DROP TABLE addict;
 DROP TABLE dealer;
 DROP TABLE drugLord;
@@ -9,6 +10,14 @@ DROP TABLE addictUser;
 DROP TABLE drugLordUser;
 DROP TABLE dealerUser;
 
+/* DROP ALL SEQUENCES */
+DROP SEQUENCE a_seq;
+DROP SEQUENCE dl_seq;
+DROP SEQUENCE d_seq;
+DROP SEQUENCE t_seq;
+DROP SEQUENCE s_seq;
+DROP SEQUENCE strans_seq;
+DROP SEQUENCE dtrans_seq;
 
 CREATE TABLE AddictUser(
 	aUserName varchar(25) Primary Key,
@@ -38,7 +47,8 @@ CREATE TABLE Addict(
 	AID int NOT NULL,
 	Cash decimal(19,4) DEFAULT 0 NOT NULL,
 	Name VARCHAR(55),
-	PRIMARY KEY (AID)
+	PRIMARY KEY (AID),
+	check (Cash > = 0)
 );
 
 CREATE TABLE DrugLord(
@@ -48,7 +58,9 @@ CREATE TABLE DrugLord(
 	Name VARCHAR(55),
 	WLID int,
     PRIMARY KEY (DLID),
-    FOREIGN KEY (WLID) REFERENCES Druglord(DLID)
+    FOREIGN KEY (WLID) REFERENCES Druglord(DLID),
+    check (Cash > = 0 ),
+    check (Cocaine >= 0)
 );
 
 CREATE TABLE Dealer(
@@ -60,7 +72,9 @@ CREATE TABLE Dealer(
 	Rating int NOT NULL,
     PRIMARY KEY (DID),
 	FOREIGN KEY (DLID) REFERENCES DrugLord(DLID),
-	check(Rating > = 0 and Rating < = 5)
+	check(Rating > = 0 and Rating < = 5),
+	check (Cash > = 0 ),
+    check (Cocaine >= 0)
 );
 
 
@@ -79,11 +93,12 @@ CREATE TABLE SupplyTrans(
 	DLID int NOT NULL,
     PRIMARY KEY (STID),
 	FOREIGN KEY (SID) REFERENCES Supplier(SID),
-	FOREIGN KEY (DLID) REFERENCES DrugLord(DLID)
+	FOREIGN KEY (DLID) REFERENCES DrugLord(DLID),
+	check (Cash > = 0 ),
+    check (Cocaine >= 0)
 );
 
-
-CREATE TABLE DistTrans (
+CREATE TABLE DistTrans(
 	DTID int NOT NULL,
 	Cash decimal(19,4) DEFAULT 0 NOT NULL,
 	Cocaine decimal(19,4) DEFAULT 0 NOT NULL,
@@ -96,8 +111,92 @@ CREATE TABLE DistTrans (
 	FOREIGN KEY (DID) REFERENCES Dealer(DID),
 	FOREIGN KEY (DLID) REFERENCES DrugLord(DLID),
 	FOREIGN KEY (TID) REFERENCES Territory(TID),
-	FOREIGN KEY (AID) REFERENCES Addict(AID)
+	FOREIGN KEY (AID) REFERENCES Addict(AID),
+	check (Cash > = 0 ),
+    check (Cocaine >= 0)
 );
+
+/*Create Sequences */
+CREATE SEQUENCE a_seq START WITH 1;
+CREATE SEQUENCE dl_seq START WITH 1;
+CREATE SEQUENCE d_seq START WITH 1;
+CREATE SEQUENCE t_seq START WITH 1;
+CREATE SEQUENCE s_seq START WITH 1;
+CREATE SEQUENCE strans_seq START WITH 1;
+CREATE SEQUENCE dtrans_seq START WITH 1;
+
+/*Create Triggers */
+
+CREATE OR REPLACE TRIGGER a_bir
+	BEFORE INSERT ON Addict
+	FOR EACH ROW
+	BEGIN 
+		SELECT a_seq.NEXTVAL
+		INTO :new.AID
+		FROM dual;
+	END;
+/
+
+CREATE OR REPLACE TRIGGER dl_bir
+	BEFORE INSERT ON DrugLord
+	FOR EACH ROW
+	BEGIN 
+		SELECT dl_seq.NEXTVAL
+		INTO :new.DLID
+		FROM dual;
+	END;
+/
+
+CREATE OR REPLACE TRIGGER d_bir
+	BEFORE INSERT ON Dealer
+	FOR EACH ROW
+	BEGIN 
+		SELECT d_seq.NEXTVAL
+		INTO :new.DID
+		FROM dual;
+	END;
+/
+
+CREATE OR REPLACE TRIGGER t_bir
+	BEFORE INSERT ON Territory
+	FOR EACH ROW
+	BEGIN 
+		SELECT t_seq.NEXTVAL
+		INTO :new.TID
+		FROM dual;
+	END;
+ /
+
+CREATE OR REPLACE TRIGGER s_bir
+	BEFORE INSERT ON Supplier
+	FOR EACH ROW
+	BEGIN 
+		SELECT s_seq.NEXTVAL
+		INTO :new.SID
+		FROM dual;
+	END;
+ /
+
+CREATE OR REPLACE TRIGGER strans_bir
+	BEFORE INSERT ON SupplyTrans
+	FOR EACH ROW
+	BEGIN 
+		SELECT strans_seq.NEXTVAL
+		INTO :new.STID
+		FROM dual;
+	END;
+ /
+
+CREATE OR REPLACE TRIGGER dtrans_bir
+	BEFORE INSERT ON DistTrans
+	FOR EACH ROW
+	BEGIN 
+		SELECT dtrans_seq.NEXTVAL
+		INTO :new.DTID
+		FROM dual;
+	END;
+ /
+
 
 INSERT INTO AddictUser(aUserName,password) VALUES ( 'addict', 'addict');
 INSERT INTO DealerUser(dUserName, password) VALUES ( 'dealer', 'dealer');
@@ -121,10 +220,10 @@ INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
 INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
  VALUES (4, 10500, 1050, 'El Loco',NULL);
 
-UPDATE DrugLord SET WLID = '3' WHERE DLID = '0';
-UPDATE DrugLord SET WLID = '0' WHERE DLID = '3';
-UPDATE DrugLord SET WLID = '1' WHERE DLID = '2';
-UPDATE DrugLord SET WLID = '2' WHERE DLID = '1';
+UPDATE DrugLord SET WLID = '4' WHERE DLID = '1';
+UPDATE DrugLord SET WLID = '1' WHERE DLID = '4';
+UPDATE DrugLord SET WLID = '2' WHERE DLID = '3';
+UPDATE DrugLord SET WLID = '3' WHERE DLID = '2';
 
 
 INSERT INTO Supplier (SID, Name) VALUES (0, 'El Lion');
@@ -134,10 +233,10 @@ INSERT INTO Supplier (SID, Name) VALUES (3, 'Mateo Moreno');
 INSERT INTO Supplier (SID, Name) VALUES (4, 'Tonald Drump');
 
 INSERT INTO Territory (TID, Name) VALUES (0,'Medellin');
-INSERT INTO Territory (TID, Name) VALUES (1,'Bogota');
-INSERT INTO Territory (TID, Name) VALUES(2,'Miami');
-INSERT INTO Territory (TID, Name) VALUES(3,'New York');
-INSERT INTO Territory (TID, Name) VALUES(4,'Cali');
+INSERT INTO Territory (TID, Name) VALUES (0,'Bogota');
+INSERT INTO Territory (TID, Name) VALUES(0,'Miami');
+INSERT INTO Territory (TID, Name) VALUES(0,'New York');
+INSERT INTO Territory (TID, Name) VALUES(0,'Cali');
 
 INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating)
 VALUES(0, 100, 10,'El Negro',
@@ -182,7 +281,7 @@ VALUES (0,10,1,CURRENT_TIMESTAMP,
 		WHERE a.name = 'Pena')
 );
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
-VALUES(1, 20000, 55, CURRENT_TIMESTAMP, 
+VALUES(0, 20000, 55, CURRENT_TIMESTAMP, 
 	(SELECT d.DID
 		FROM Dealer d
 		Where d.name = 'Jesse Pinkman'),
@@ -197,7 +296,7 @@ VALUES(1, 20000, 55, CURRENT_TIMESTAMP,
 		WHERE a.name = 'Xavier')
 );
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
-VALUES(2, 1000000, 150, CURRENT_TIMESTAMP,
+VALUES(0, 1000000, 150, CURRENT_TIMESTAMP,
 	(SELECT d.DID
 		FROM Dealer d 
 		WHERE d.name = 'El Negro'),
@@ -211,8 +310,8 @@ VALUES(2, 1000000, 150, CURRENT_TIMESTAMP,
 		FROM Addict a
 		WHERE a.name = 'Bob')
 );
-INSERT INTO DIstTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
-VALUES( 3, 500000, 150, CURRENT_TIMESTAMP,
+INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
+VALUES(0, 500000, 150, CURRENT_TIMESTAMP,
 	(SELECT d.DID
 		FROM Dealer d
 		WHERE d.name = 'Bruno Vasquez'),
@@ -228,7 +327,7 @@ VALUES( 3, 500000, 150, CURRENT_TIMESTAMP,
 );
 
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
-VALUES ( 4, 9000, 30, CURRENT_TIMESTAMP,
+VALUES ( 0, 9000, 30, CURRENT_TIMESTAMP,
 	(SELECT d.DID
 		FROM Dealer d
 		WHERE d.name = 'Tom Brady'),
