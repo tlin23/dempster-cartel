@@ -3,6 +3,7 @@ package LoginUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+
 import javax.swing.*;
 
 import querySet.DataQueries;
@@ -14,9 +15,23 @@ public class dlLoginInterface {
 	private JPasswordField passwordField;
 	private JFrame mainFrame;
 	
-	
 	public dlLoginInterface(final Connection con){
-		this.con = con;
+		try {
+		   System.out.println("Selecting...");
+
+		   // con is a Connection object 
+			Statement stmt = con.createStatement();
+			
+//					int rowCount = stmt.executeUpdate("INSERT INTO branch VALUES (20, 'Richmond Main', " +
+//			      "'18122 No.5 Road', 'Richmond', 5252738)");
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Addict");
+			while(rs.next()) {
+				System.out.println(rs.getString("AID") + " " + rs.getString("Name"));
+			}
+	    } catch (SQLException ex) {
+		   System.out.println(ex);
+	    }
 		mainFrame = new JFrame("DrugLord Login");
 		
 		JLabel regLabel = new JLabel("DrugLord Login");

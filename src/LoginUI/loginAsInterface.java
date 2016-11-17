@@ -9,8 +9,7 @@ public class loginAsInterface {
 
 	private JFrame mainFrame;
 	
-	public loginAsInterface(final Connection con){
-		
+	public loginAsInterface(final Connection con){		
 		mainFrame = new JFrame("Login As");
 		JLabel loginAsLabel = new JLabel("Login as:");
 		JButton dlButton = new JButton("DrugLord");

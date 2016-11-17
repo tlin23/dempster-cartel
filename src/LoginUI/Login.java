@@ -2,6 +2,7 @@ package LoginUI;
 
 import java.awt.*;
 import java.sql.*;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -14,6 +15,8 @@ public class Login{
 	
 	public Login(){
 		// Connect to database
+		// to tunnel: ssh -l <your username> -L localhost:1522:dbhost.ugrad.cs.ubc.ca:1522 lulu.ugrad.cs.ubc.ca
+		// to tunnel: ssh -l h3b0b -L localhost:1522:dbhost.ugrad.cs.ubc.ca:1522 lulu.ugrad.cs.ubc.ca
 		try {
 		   System.out.println("Loading driver ...");
 
@@ -36,6 +39,8 @@ public class Login{
 	    } catch( Exception e ) {
 		   System.out.println("Connection failed\n" + e);
 	    }
+		
+		
 		
 		//Create components for the login window
 		

@@ -3,6 +3,7 @@ package LoginUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+
 import javax.swing.*;
 
 import querySet.DataQueries;
@@ -14,7 +15,7 @@ public class aLoginInterface {
 	private JPasswordField passwordField;
 	private JFrame mainFrame;
 	
-	public aLoginInterface(final Connection con){
+	public aLoginInterface(Connection con){
 		this.con = con;
 		mainFrame = new JFrame("Addict Login");
 		
