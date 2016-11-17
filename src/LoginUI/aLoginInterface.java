@@ -15,7 +15,7 @@ public class aLoginInterface {
 	private JPasswordField passwordField;
 	private JFrame mainFrame;
 	
-	public aLoginInterface(Connection con){
+	public aLoginInterface(final Connection con){
 		this.con = con;
 		mainFrame = new JFrame("Addict Login");
 		
@@ -89,38 +89,37 @@ public class aLoginInterface {
 		contentPane.add(errorMsg);
 		
 		ActionListener userListener = new ActionListener(){
-			
 			public void actionPerformed(ActionEvent e) {
-				if(connect()){
-					String user = usernameField.getText();
-					String pass = String.valueOf(passwordField.getPassword());
+				String user = usernameField.getText();
+				String pass = String.valueOf(passwordField.getPassword());
+				
+				String loginQuery = "select aUserName,password from addictUser where aUserName = '";
+				loginQuery = loginQuery.concat(user.concat("'"));
+				
+				//search addict table
+				try{
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(loginQuery);
 					
-					String loginQuery = "select aUserName,password from addictUser where aUserName = '";
-					loginQuery = loginQuery.concat(user.concat("'"));
-					
-					//search addict table
-					try{
-						Statement st = con.createStatement();
-						ResultSet rs = st.executeQuery(loginQuery);
-						
-						if(rs.next()){
-							String dBPass = rs.getString("password");
-							if(dBPass.equals(pass)){
-								Connection con1 = con;
-								new addictInterface(con1);
-								mainFrame.dispose();
-							}else{
-								errorMsg.setText("Invalid Username");
-								passwordField.setText("");
-								usernameField.setText("");
-							}
+					if(rs.next()){
+						String dBPass = rs.getString("password");
+						if(dBPass.equals(pass)){
+							Connection con1 = con;
+							new addictInterface(con1);
+							mainFrame.dispose();
+						}else{
+							errorMsg.setText("Invalid Username");
+							passwordField.setText("");
+							usernameField.setText("");
 						}
-						
-						
-					}catch(SQLException e1){
-						System.out.println("Error: "+ e1.getMessage());
-						errorMsg.setText("Invalid input");
+					} else {
+						errorMsg.setText("Invalid Login. Please try again");
+						passwordField.setText("");
+						usernameField.setText("");
 					}
+				}catch(SQLException e1){
+					System.out.println("Error: "+ e1.getMessage());
+					errorMsg.setText("Invalid input");
 				}
 			}
 		};
@@ -144,19 +143,4 @@ public class aLoginInterface {
 	    mainFrame.setVisible(true);
 	    usernameField.requestFocus();	
 	}
-	
-	private boolean connect(){
-	try{
-		String connectURL ="jdbc:oracle:thin:@localhost:1522:ug";
-		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-		con = DriverManager.getConnection(connectURL, "ora_h3b0b", "a14558143");
-		DataQueries.con = con;
-		return true;
-	}catch(SQLException e){
-		System.out.println("Message: " + e.getMessage());
-	}
-	JOptionPane.showMessageDialog(mainFrame, "Cannot connect to Oracle","Error",JOptionPane.ERROR_MESSAGE);
-	return false;
-    }
-
 }
