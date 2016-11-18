@@ -14,13 +14,13 @@ public class addictInterface{
 	
 	// Window Frames in Addict UI
 	private JFrame mainFrame;
-	private Connection clientcon;
+	private Connection clientCon;
 	private String user;
 	
 
 	public addictInterface(Connection con, String user){
 		System.out.println("\nLogged in as Addict");
-		clientcon = con;
+		clientCon = con;
 		this.user = user;
 		
 		mainFrame = new JFrame("Addict View");
@@ -103,7 +103,199 @@ public class addictInterface{
 	}
 	
 	private void showDealers(){
+		JFrame dataFrame = new JFrame("Dealers");
+		JPanel contentPane = new JPanel();
+		dataFrame.setContentPane(contentPane);
 		
+		BorderLayout layout = new BorderLayout();
+		contentPane.setLayout(layout);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		
+		String[] colNames = { "Name","Rating" };
+		DefaultTableModel model = new DefaultTableModel() {
+			public boolean isCellEditable(int rowIndex, int ColIndex) {
+				return false;
+			}
+		};
+		
+		JTable jt = new JTable();
+		jt.setModel(model);
+		model.setColumnIdentifiers(colNames);
+		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		jt.setRowHeight(50);
+		jt.setMinimumSize(new Dimension(200,50));
+		dataFrame.setMinimumSize(new Dimension(300, 100));
+		contentPane.add(new JScrollPane(jt));
+		
+		try {
+			List<DealerData> dealerData = DataQueries.getDealers();
+			for (DealerData d : dealerData) {
+				Object[] o = new Object[2];
+				o[0] = d.name;
+				o[1] = d.rating;
+				model.addRow(o);
+			}
+		}
+		catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			Login.showErrorConnecting(mainFrame);
+		}
+	
+		jt.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e){
+				if (e.getClickCount()== 2){
+					JTable target = (JTable)e.getSource();
+					int row = target.getSelectedRow();
+					int column = target.getSelectedColumn();
+					
+					//System.out.println(row);
+					//System.out.println(column);
+					
+					String selectedName = (String) jt.getModel().getValueAt(row,0);
+					//System.out.println(selectedName);
+					
+					int selectedRating = (int) jt.getModel().getValueAt(row,1);
+					//System.out.println(selectedName.toString());
+					
+					//System.out.println(selectedRating);
+					if(column == 0){
+						
+						rateAddict(selectedName,selectedRating);
+						dataFrame.dispose();
+						
+					}
+				}
+			}
+		});
+		
+		JPanel bot = new JPanel(new FlowLayout());
+		JLabel rateLabel = new JLabel("Want to Rate a Dealer? Double Click the Dealer's Name!");
+		
+		
+		bot.add(rateLabel);
+		dataFrame.add(bot,BorderLayout.SOUTH);
+		
+		
+		dataFrame.pack();
+		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dataFrame.setVisible(true);
+		
+	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = dataFrame.getBounds();
+	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+	}
+	
+	private void rateAddict(String name,int rating){
+		JTextField rateField;
+		JFrame dataFrame = new JFrame("Rate Dealer");		
+		JLabel titleLabel = new JLabel("Rate This Dealer!");
+		JButton rateButton = new JButton("Done");
+		JLabel nameLabel = new JLabel("Dealer Name: ");
+		JLabel dLabel = new JLabel(name);
+		JLabel rateLabel = new JLabel("Rate from 0 to 5: ");
+		rateField = new JTextField(10);
+		
+		JPanel contentPane = new JPanel();
+		dataFrame.setContentPane(contentPane);
+		
+		GridBagLayout gb = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		contentPane.setLayout(gb);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(titleLabel,c);
+		contentPane.add(titleLabel);
+		
+		// name Label
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(nameLabel, c);
+		contentPane.add(nameLabel);
+				
+		// dealer name
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		c.weightx=1.;
+		c.fill = GridBagConstraints.NONE;
+		gb.setConstraints(dLabel, c);
+		contentPane.add(dLabel);
+				
+		// Password Label
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(rateLabel, c);
+		contentPane.add(rateLabel);
+				
+		// Password Field 
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		c.weightx=1.;
+		c.fill = GridBagConstraints.NONE;
+		gb.setConstraints(rateField, c);
+		contentPane.add(rateField);
+		
+		//rate button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(rateButton, c);
+		contentPane.add(rateButton);
+		
+		ActionListener userListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+				String rateSt = rateField.getText();
+				String checkQuery = "select rating from dealer where name = ?";
+				
+				try{
+					PreparedStatement st = clientCon.prepareStatement(checkQuery);
+					st.setString(1, name);
+					ResultSet rs = st.executeQuery();
+					
+					if(rs.next()){
+						String oldRating = rs.getString("rating");
+						System.out.println(oldRating);
+					
+					
+						int newRating = Integer.parseInt(rateSt) + Integer.parseInt(oldRating);
+						newRating = newRating / 2;
+						System.out.println(newRating);
+						
+						
+						String reQuery = "UPDATE dealer SET rating = ? WHERE name = ?";
+						st = clientCon.prepareStatement(reQuery);
+						st.setString(1, Integer.toString(newRating));
+						st.setString(2, name);
+						rs = st.executeQuery();
+						
+						showDealers();
+						dataFrame.dispose();
+						
+						
+					}
+					
+				}catch(SQLException e1){
+					System.out.println("Error: " + e1.getMessage());
+				}
+			
+			}
+		};
+		
+		rateField.addActionListener(userListener);
+		rateButton.addActionListener(userListener);
+		
+		
+		dataFrame.pack();
+		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dataFrame.setVisible(true);
+		
+	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = dataFrame.getBounds();
+	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
 	}
 	
 	private void showAddicts(){
@@ -113,7 +305,7 @@ public class addictInterface{
 		
 		BorderLayout layout = new BorderLayout();
 		contentPane.setLayout(layout);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		
 		String[] colNames = { "Name" };
 		DefaultTableModel model = new DefaultTableModel() {
@@ -134,7 +326,7 @@ public class addictInterface{
 		try {
 			List<AddictData> addictData = DataQueries.getAddicts();
 			for (AddictData a : addictData) {
-				Object[] o = new Object[2];
+				Object[] o = new Object[1];
 				o[0] = a.name;
 				model.addRow(o);
 			}
@@ -143,6 +335,19 @@ public class addictInterface{
 			System.out.println(ex.getMessage());
 			Login.showErrorConnecting(mainFrame);
 		}
+		
+		JPanel bot = new JPanel(new FlowLayout());
+		JButton addAddictButton = new JButton("Join the Community, Add Addict");
+		
+		addAddictButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addAddict();
+				dataFrame.dispose();
+			}
+		});
+		bot.add(addAddictButton);
+		dataFrame.add(bot,BorderLayout.SOUTH);
+		
 		dataFrame.pack();
 		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		dataFrame.setVisible(true);
@@ -150,7 +355,122 @@ public class addictInterface{
 	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
 	    Rectangle r1 = dataFrame.getBounds();
 	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-	    
-	    //other default window features
 	}
-}
+	
+	private void addAddict(){
+		JTextField nameField;
+		JTextField cashField;
+		JFrame dataFrame = new JFrame("Add Addict");		
+		JLabel regLabel = new JLabel("Register Here!");
+		JButton regButton = new JButton("Login");
+		JLabel nameLabel = new JLabel("Enter name: ");
+		JLabel cashLabel = new JLabel("Enter cash: ");
+		nameField = new JTextField(10);
+		cashField = new JTextField(10);
+		
+		JPanel contentPane = new JPanel();
+		dataFrame.setContentPane(contentPane);
+		
+		GridBagLayout gb = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		contentPane.setLayout(gb);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(regLabel,c);
+		contentPane.add(regLabel);
+		
+		// Username Label
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(nameLabel, c);
+		contentPane.add(nameLabel);
+				
+		// Username Text Field
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		c.weightx=1.;
+		c.fill = GridBagConstraints.NONE;
+		gb.setConstraints(nameField, c);
+		contentPane.add(nameField);
+				
+		// Password Label
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(cashLabel, c);
+		contentPane.add(cashLabel);
+				
+		// Password Field 
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		c.weightx=1.;
+		c.fill = GridBagConstraints.NONE;
+		gb.setConstraints(cashField, c);
+		contentPane.add(cashField);
+		
+		//Register button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(regButton, c);
+		contentPane.add(regButton);
+		
+		//Error message
+		final JLabel errorMsg = new JLabel("");
+		errorMsg.setForeground(Color.red);
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(errorMsg, c);
+		contentPane.add(errorMsg);
+		
+		ActionListener userListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String name = nameField.getText();
+				String cashst = cashField.getText();
+				String checkQuery = "select name from addict where name = ?";
+				
+				try{
+					PreparedStatement st = clientCon.prepareStatement(checkQuery);
+					st.setString(1, name);
+					ResultSet rs = st.executeQuery();
+					
+					if(rs.next()){
+						nameField.setText("");
+						cashField.setText("");
+						errorMsg.setText("name already exists");
+					}else{
+						String regQuery = "insert into addict values(0,?,?)";
+						st = clientCon.prepareStatement(regQuery);
+						System.out.println(regQuery);
+						st.setString(1, cashst);
+						st.setString(2, name);
+						rs = st.executeQuery();
+						
+						showAddicts();
+						dataFrame.dispose();
+	
+					}
+					
+				}catch(SQLException e1){
+					System.out.println("Error: " + e1.getMessage());
+				}
+			
+			}
+		};
+				
+		nameField.addActionListener(userListener);
+		regButton.addActionListener(userListener);
+		
+		
+		dataFrame.pack();
+		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dataFrame.setVisible(true);
+		
+	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = dataFrame.getBounds();
+	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+	}
+}	
