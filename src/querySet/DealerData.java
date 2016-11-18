@@ -7,6 +7,7 @@ public class DealerData {
 	public String name;
 	public int DLID;
 	public int rating;
+	public String dUserName;
 	
 	@Override 
 	public String toString(){
@@ -17,6 +18,7 @@ public class DealerData {
 		sb.append(", Name = ").append(name).append('\'');
 		sb.append(", DLID= ").append(DLID).append('\'');
 		sb.append(", Rating= ").append(rating).append('\'');
+		sb.append(", dUsername = ").append(dUserName).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}

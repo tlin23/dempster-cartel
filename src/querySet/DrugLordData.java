@@ -6,6 +6,7 @@ public class DrugLordData {
 	public int cocaine;
 	public String name;
 	public int warWith;
+	public String dlUserName;
 	
 	@Override
 	public String toString(){
@@ -15,6 +16,7 @@ public class DrugLordData {
 		sb.append(", Cocaine(kg)= ").append(cocaine).append('\'');
 		sb.append(", Name= ").append(name).append('\'');
 		sb.append(", Currently in war with= ").append(warWith).append('\'');
+		sb.append(", dlUserName= ").append(dlUserName).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}
