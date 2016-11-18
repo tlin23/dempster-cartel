@@ -15,7 +15,7 @@ SELECT * FROM Addict, Dealer, Druglord, Supplier
 // name
 “SELECT Name, Cash FROM Addict WHERE Name Like '%“ + Name + “%'”
 
-// Addicts with cash > CashValue
+// Addicts with cash > CashValue (i.e. owes certain amount $$)
 “SELECT Name, Cash FROM Addict WHERE Cash > “ + CashValue
 
 
@@ -69,44 +69,196 @@ SELECT * FROM Addict, Dealer, Druglord, Supplier
 
 
 
-// =========================== View Transactions ===========================
+// =========================== View Transactions, Territory ===========================
 Select * From SupplyTrans, DistTrans
 
-// == View Supply Transaction ==
-Select * From SupplyTrans 
+// ===== View Supply Transaction =====
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d”
 
 // STID
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.STID = “ + STID
+
+// Date (how do you specify type date???)
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.transDate = “ + Date
+
+// Cocaine > CocaineValue
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.cocaine > “ + CocaineValue
+
+// Cash > CashValue
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.cash > “ + CashValue
 
 
-// == View Distribution Transaction ==
-Select * From DistTrans
+
+// ===== View Distribution Transaction =====
+Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID
+
+// DTID
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.DTID = “ + DTID
+
+// all DT for Dealer DID
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.DID = “ + DID
 
 
+// all DT that DrugLord DLID oversaw
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.DLID = “ + DLID
+
+// all DT in Territory TID
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.TID = “ + TID
+
+// all DT involving Addict AID
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.AID = “ + AID
+
+// Date
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.transDate = “ + Date
+
+// Cocaine > CocaineValue
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.cocaine > “ + CocaineValue
+
+// Cash > CashValue
+“Select dt.DTID, dt.cash, dt.cocaine, dt.transDate, d.name as Dealer, dl.name as DrugLord, t.name as Territory, a.name as Addict From DistTrans dt, Dealer d, DrugLord dl, Territory t, Addict a WHERE dt.DID = d.DID and dt.DLID = dl.DLID and dt.TID = t.TID and dt.AID = a.AID and dt.cash > “ + CashValue
 
 
+// ===== View Territories =====
+“SELECT * From Territory”
+
+// TID
+“SELECT * From Territory WHERE TID = ” + TID
+// Name
+“SELECT * From Territory WHERE Name Like '%“ + Name + “%'”
+
+// =========================== Add/Remove People ===========================
 
 
+?? Cascade upon deletion????
+?? Resolve conflict when add??
 
-// =========================== Adding Shit ===========================
-
-// Add Drug Lord
+// === Add Drug Lord ===
 “INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
-VALUES (DLID, cash, cocaine, name, warWith)”
+VALUES (“ + DLID “,” + cash + ”,” + cocaine + ”,“ + name + “,” + warWith + “)”
 
-// Remove Drug Lord
+// === Remove Drug Lord ===
+// DLID
+“DELETE FROM DrugLord WHERE DLID = “ + DLID
+// Name
+“DELETE FROM DrugLord WHERE Name Like '%“ + Name + “%'”
 
-// Add Supplier
-// Remove Supplier
+// === Add Supplier ===
+“INSERT INTO Supplier (SID, Name) VALUES (“ + SID + “,” + Name + “)”
+
+// === Remove Supplier ===
+// SID
+“DELETE FROM Supplier WHERE SID = “ + SID
+// Name
+“DELETE FROM Supplier WHERE Name Like '%“ + Name + “%'”
+
+// === Add Dealer ===
+“INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating) VALUES (“ + DID “,” + Cash “,” + Cocaine + “,” + Name + “,” + DLID + “,” + Rating + ”)”
+
+// === Remove Dealer ===
+// DID
+“DELETE FROM Dealer WHERE DID = “ + DID
+// Name
+“DELETE FROM Dealer WHERE Name Like '%“ + Name + “%'”
+
+// === Add Addict ===
+“INSERT INTO Addict (AID, Cash, Name) VALUES (“ + AID + “,” + Cash + “,” + Name + “)”
+
+// === Remove Addict ===
+// AID
+“DELETE FROM Addict WHERE AID = “ + AID
+//Name
+“DELETE FROM Addict WHERE Name Like '%“ + Name + “%'”
 
 
-// Add Dealer
-// Remove Dealer
 
 
-// Add Addict
-// Remove Addict
+// =========================== Add/Remove Transactions, Territory ===========================
+
+// ===== Add Supply Transaction ======
+“INSERT INTO SupplyTrans(STID, Cash, Cocaine, TransDate, SID, DLID) VALUES(“ + STID + “,” + Cash + “,” + Cocaine + “,” + TransDate + “,” + SID + “,” + DLID +”)”
+
+// DrugLord: add cocaine, minus cash ????
+“UPDATE DrugLord SET Cocaine = Cocaine + “ + CocaineValue  + “ WHERE DLID = “ + DLID
+“UPDATE DrugLord SET Cash = Cash - “ + CashValue  + “ WHERE DLID = “ + DLID
+
+
+// ===== Remove Supply Transaction ======
+// STID
+“DELETE FROM SupplyTrans WHERE STID = “ + STID
 
 
 
 
-// =========================== Territory Shit ===========================
+// ===== Add Distribution Transaction ======
+“INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
+VALUES(“ + DTID + “,” + Cash + “,” + Cocaine + “,” + TransDate + “,” + DID + “,” + DLID + “,” + TID + “,” + AID + “)”
+
+// Dealer Update: minus cocaine, add cash
+“UPDATE Dealer SET Cocaine = Cocaine - “ + CocaineValue  + “ WHERE DID = “ + DID
+
+// Case 1: addict pays up front
+“UPDATE Dealer SET Cash = Cash + “ + CashValue  + “ WHERE DID = “ + DID
+
+// Case 2: addict puts on tab (i.e. no update on cash for Dealer)
+// Addict: update tab
+“UPDATE Addict SET Cash = Cash + “ + CashValue + “ WHERE AID = “ + AID
+
+
+// ===== Remove Distribution Transaction ======
+// DTID
+“DELETE FROM DistTrans WHERE DTID = “ + DTID
+
+// ===== Add Territory ======
+“INSERT INTO Territory (TID, Name) VALUES “(“ + TID + “,” + Name + “)”
+
+// ===== Remove Territory ======
+// TID
+“DELETE FROM Territory WHERE TID = “ + TID
+
+// Name
+“DELETE FROM Territory WHERE Name Like '%“ + Name + “%'”
+
+
+
+
+// =========================== Transfer Drugs/Money ===========================
+// ============= b/w DrugLord + Dealer (need a table? eeeeeek) =============
+// === Transfer Drugs: Druglord —> Dealer ===
+// Update DrugLord
+“UPDATE DrugLord SET Cocaine = Cocaine - “ + CocaineValue  + “ WHERE DLID = “ + DLID
+
+// Update Dealer
+“UPDATE Dealer SET Cocaine = Cocaine + “ + CocaineValue  + “ WHERE DID = “ + DID
+
+
+
+// === Transfer Money: Dealer —> DrugLord ===
+// Update DrugLord
+“UPDATE DrugLord SET Cash = Cash + “ + CashValue  + “ WHERE DLID = “ + DLID
+
+// Update Dealer
+“UPDATE Dealer SET Cash = Cash - “ + CashValue  + “ WHERE DID = “ + DID
+
+
+// === Transfer Drugs + Money ===
+
+// Update DrugLord
+“UPDATE DrugLord SET Cocaine = Cocaine - “ + CocaineValue  + “ WHERE DLID = “ + DLID
+“UPDATE DrugLord SET Cash = Cash + “ + CashValue  + “ WHERE DLID = “ + DLID
+
+// Update Dealer
+“UPDATE Dealer SET Cocaine = Cocaine + “ + CocaineValue  + “ WHERE DID = “ + DID
+“UPDATE Dealer SET Cash = Cash - “ + CashValue  + “ WHERE DID = “ + DID
+
+
+
+
+
+
+// ===== Addict pay tab??? (need table??) =====
+
+// Update Dealer
+“UPDATE Dealer SET Cash = Cash + “ + CashValue  + “ WHERE DID = “ + DID
+
+// Update Addict
+“UPDATE Addict SET Cash = Cash - “ + CashValue  + “ WHERE DID = “ + DID
