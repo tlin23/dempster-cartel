@@ -396,7 +396,7 @@ public class dealerInterface {
 				mainFrame.dispose();
 			}
 		});
-		
+		mainFrame.setMinimumSize(new Dimension(400, 200));
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Resize window
 		mainFrame.pack();

@@ -10,12 +10,16 @@ public class dRegInterface {
 	
 	private JTextField usernameField;
 	private JPasswordField passwordField;
+	private JTextField nameField;
+	private JTextField cashField;
+	private JTextField cocaineField;
+	private JTextField ratingField;
+	private JTextField drugLordField;
 	private JFrame mainFrame;
 	
 	public dRegInterface(final Connection con){
 		this.con = con;
 		mainFrame = new JFrame("Dealer Registration");
-		
 		JLabel regLabel = new JLabel("Dealer Registration");
 		JLabel usernameLabel = new JLabel("Enter UserName: ");
 		JLabel passwordLabel = new JLabel("Enter Password: ");
@@ -128,6 +132,7 @@ public class dRegInterface {
 				System.exit(0);
 			}
 		});
+		mainFrame.setMinimumSize(new Dimension(400, 200));
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Resize window
 		mainFrame.pack();

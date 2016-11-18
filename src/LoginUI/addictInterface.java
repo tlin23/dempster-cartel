@@ -381,13 +381,13 @@ public class addictInterface{
 		gb.setConstraints(regLabel,c);
 		contentPane.add(regLabel);
 		
-		// Username Label
+		// name Label
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(nameLabel, c);
 		contentPane.add(nameLabel);
 				
-		// Username Text Field
+		// name Text Field
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 0, 5, 10);
 		c.weightx=1.;
@@ -395,13 +395,13 @@ public class addictInterface{
 		gb.setConstraints(nameField, c);
 		contentPane.add(nameField);
 				
-		// Password Label
+		// cash Label
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(cashLabel, c);
 		contentPane.add(cashLabel);
 				
-		// Password Field 
+		// cash Field 
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 0, 5, 10);
 		c.weightx=1.;
