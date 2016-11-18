@@ -48,7 +48,7 @@ public class drugLordInterface {
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
 		
-		//view DistTrans button
+		//view Supply button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
 		c.weightx= 0;
