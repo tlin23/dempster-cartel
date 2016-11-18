@@ -95,6 +95,53 @@ public class drugLordInterface {
 				showAddicts();
 				//mainFrame.dispose(); //not yet
 			}
+			private void showAddicts(){
+				JFrame dataFrame = new JFrame("View All Addicts");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<AddictData> addictData = DataQueries.getAddicts();
+					for (AddictData a : addictData) {
+						Object[] o = new Object[2];
+						o[0] = a.name;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}
 		});
 		
 		viewDealers.addActionListener(new ActionListener(){
@@ -102,12 +149,115 @@ public class drugLordInterface {
 				showDealers();
 				//mainFrame.dispose(); //not yet
 			}
+			private void showDealers(){
+				JFrame dataFrame = new JFrame("View All Dealers");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name", "Cash", "Cocaine" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<DealerData> dealerData = DataQueries.getDealers();
+					for (DealerData d : dealerData) {
+						Object[] o = new Object[3];
+						o[0] = d.name;
+						o[1] = d.cash;
+						o[2] = d.cocaine;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}			
+
 		});
 		
 		viewDruglords.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showDruglords();
 				//mainFrame.dispose(); //not yet
+			}
+
+			private void showDruglords(){
+				
+				JFrame dataFrame = new JFrame("View All Druglords");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name", "Cash", "Cocaine" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<DrugLordData> druglordData = DataQueries.getDruglords();
+					for (DrugLordData dl : druglordData) {
+						Object[] o = new Object[3];
+						o[0] = dl.name;
+						o[1] = dl.cash;
+						o[2] = dl.cocaine;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
 			}
 		});
 		
@@ -183,156 +333,4 @@ public class drugLordInterface {
 	    //other default window features
 	    mainFrame.setVisible(true);	
 	}
-	
-	private void showDruglords(){
-		
-		JFrame dataFrame = new JFrame("View All Druglords");
-		JPanel contentPane = new JPanel();
-		dataFrame.setContentPane(contentPane);
-		
-		BorderLayout layout = new BorderLayout();
-		contentPane.setLayout(layout);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-		
-		String[] colNames = { "Name", "Cash", "Cocaine" };
-		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int rowIndex, int ColIndex) {
-				return false;
-			}
-		};
-		
-		JTable jt = new JTable();
-		jt.setModel(model);
-		model.setColumnIdentifiers(colNames);
-		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		jt.setRowHeight(50);
-		jt.setMinimumSize(new Dimension(200,50));
-		dataFrame.setMinimumSize(new Dimension(300, 100));
-		contentPane.add(new JScrollPane(jt));
-		
-		try {
-			List<DrugLordData> druglordData = DataQueries.getDruglords();
-			for (DrugLordData dl : druglordData) {
-				Object[] o = new Object[3];
-				o[0] = dl.name;
-				o[1] = dl.cash;
-				o[2] = dl.cocaine;
-				model.addRow(o);
-			}
-		}
-		catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			Login.showErrorConnecting(mainFrame);
-		}
-		
-		dataFrame.pack();
-		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dataFrame.setVisible(true);
-		
-	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-	    Rectangle r1 = dataFrame.getBounds();
-	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-	    
-	    //other default window features
-	}
-	
-	private void showDealers(){
-		JFrame dataFrame = new JFrame("View All Dealers");
-		JPanel contentPane = new JPanel();
-		dataFrame.setContentPane(contentPane);
-		
-		BorderLayout layout = new BorderLayout();
-		contentPane.setLayout(layout);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-		
-		String[] colNames = { "Name", "Cash", "Cocaine" };
-		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int rowIndex, int ColIndex) {
-				return false;
-			}
-		};
-		
-		JTable jt = new JTable();
-		jt.setModel(model);
-		model.setColumnIdentifiers(colNames);
-		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		jt.setRowHeight(50);
-		jt.setMinimumSize(new Dimension(200,50));
-		dataFrame.setMinimumSize(new Dimension(300, 100));
-		contentPane.add(new JScrollPane(jt));
-		
-		try {
-			List<DealerData> dealerData = DataQueries.getDealers();
-			for (DealerData d : dealerData) {
-				Object[] o = new Object[3];
-				o[0] = d.name;
-				o[1] = d.cash;
-				o[2] = d.cocaine;
-				model.addRow(o);
-			}
-		}
-		catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			Login.showErrorConnecting(mainFrame);
-		}
-		
-		dataFrame.pack();
-		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dataFrame.setVisible(true);
-		
-	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-	    Rectangle r1 = dataFrame.getBounds();
-	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-	    
-	    //other default window features
-	}
-	
-	private void showAddicts(){
-		JFrame dataFrame = new JFrame("View All Addicts");
-		JPanel contentPane = new JPanel();
-		dataFrame.setContentPane(contentPane);
-		
-		BorderLayout layout = new BorderLayout();
-		contentPane.setLayout(layout);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-		
-		String[] colNames = { "Name" };
-		DefaultTableModel model = new DefaultTableModel() {
-			public boolean isCellEditable(int rowIndex, int ColIndex) {
-				return false;
-			}
-		};
-		
-		JTable jt = new JTable();
-		jt.setModel(model);
-		model.setColumnIdentifiers(colNames);
-		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		jt.setRowHeight(50);
-		jt.setMinimumSize(new Dimension(200,50));
-		dataFrame.setMinimumSize(new Dimension(300, 100));
-		contentPane.add(new JScrollPane(jt));
-		
-		try {
-			List<AddictData> addictData = DataQueries.getAddicts();
-			for (AddictData a : addictData) {
-				Object[] o = new Object[2];
-				o[0] = a.name;
-				model.addRow(o);
-			}
-		}
-		catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			Login.showErrorConnecting(mainFrame);
-		}
-		dataFrame.pack();
-		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dataFrame.setVisible(true);
-		
-	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-	    Rectangle r1 = dataFrame.getBounds();
-	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-	    
-	    //other default window features
-	}
-
 }
