@@ -47,8 +47,11 @@ CREATE TABLE Addict(
 	AID int NOT NULL,
 	Cash decimal(19,4) DEFAULT 0 NOT NULL,
 	Name VARCHAR(55),
+	aUserName varchar(25) not null,
 	PRIMARY KEY (AID),
-	check (Cash > = 0)
+	FOREIGN KEY(aUserName) references AddictUser ON DELETE CASCADE,
+	check (Cash > = 0),
+	check (REGEXP_LIKE(aUserName,'^[a-zA-Z][a-zA-Z0-9.,$;]*$'))
 );
 
 CREATE TABLE DrugLord(
@@ -57,10 +60,13 @@ CREATE TABLE DrugLord(
 	Cocaine decimal(19,4) DEFAULT 0  NOT NULL,
 	Name VARCHAR(55),
 	WLID int,
+	dlUserName varchar(25) not null,
     PRIMARY KEY (DLID),
+    FOREIGN KEY (dlUserName) references DrugLordUser ON DELETE CASCADE,
     FOREIGN KEY (WLID) REFERENCES Druglord(DLID),
     check (Cash > = 0 ),
-    check (Cocaine >= 0)
+    check (Cocaine >= 0),
+    check (REGEXP_LIKE(dlUserName,'^[a-zA-Z][a-zA-Z0-9.,$;]*$'))
 );
 
 CREATE TABLE Dealer(
@@ -70,11 +76,14 @@ CREATE TABLE Dealer(
 	Name VARCHAR(55),
 	DLID int NOT NULL,
 	Rating int NOT NULL,
+	dUserName varchar(25) not null,
     PRIMARY KEY (DID),
+    FOREIGN KEY (dUserName) references DealerUser ON DELETE CASCADE,
 	FOREIGN KEY (DLID) REFERENCES DrugLord(DLID),
 	check(Rating > = 0 and Rating < = 5),
 	check (Cash > = 0 ),
-    check (Cocaine >= 0)
+    check (Cocaine >= 0),
+    check (REGEXP_LIKE(dUserName,'^[a-zA-Z][a-zA-Z0-9.,$;]*$'))
 );
 
 
@@ -199,26 +208,39 @@ CREATE OR REPLACE TRIGGER dtrans_bir
 
 
 INSERT INTO AddictUser(aUserName,password) VALUES ( 'addict', 'addict');
+INSERT INTO AddictUser(aUserName,password) VALUES ( 'x', 'men');
+INSERT INTO AddictUser(aUserName,password) VALUES ( 'my', 'name');
+INSERT INTO AddictUser(aUserName,password) VALUES ( 'square', 'pants');
+INSERT INTO AddictUser(aUserName,password) VALUES ( 'star', 'fish');
+
+INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'drug','lord');
+INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'bar','foo');
+INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'pass','user');
+INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'white','black');
+INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'abc','abc');
+
 INSERT INTO DealerUser(dUserName, password) VALUES ( 'dealer', 'dealer');
-INSERT INTO DrugLordUser(dlUserName, password) VALUES( 'drugLord','drugLord');
+INSERT INTO DealerUser(dUserName, password) VALUES ( 'foo', 'bar');
+INSERT INTO DealerUser(dUserName, password) VALUES ( 'lemon', 'juice');
+INSERT INTO DealerUser(dUserName, password) VALUES ( 'user', 'pass');
+INSERT INTO DealerUser(dUserName, password) VALUES ( 'cool', 'beans');
 
+INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 101, 'Pena','addict');
+INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 270, 'Xavier','x');
+INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 556, 'Jeff','my');
+INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 220, 'Bob','square');
+INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 10, 'Patrick','star');
 
-INSERT INTO Addict (AID, Cash, Name) VALUES (0, 101, 'Pena');
-INSERT INTO Addict (AID, Cash, Name) VALUES (1, 270, 'Xavier');
-INSERT INTO Addict (AID, Cash, Name) VALUES (2, 556, 'Jeff');
-INSERT INTO Addict (AID, Cash, Name) VALUES (3, 220, 'Bob');
-INSERT INTO Addict (AID, Cash, Name) VALUES (4, 10, 'Patrick');
-
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID) 
-VALUES (0,100000,1000,'Pablo Escobar',NULL);
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID) 
-VALUES (1, 80000, 600, 'Gonzalo Gacha',NULL);
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID ) 
-VALUES (2, 500,100, 'El Limon',NULL);
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
- VALUES (3, 20000, 500, 'Juan David Ochoa',NULL);
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
- VALUES (4, 10500, 1050, 'El Loco',NULL);
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+VALUES (0,100000,1000,'Pablo Escobar',NULL,'drug');
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+VALUES (1, 80000, 600, 'Gonzalo Gacha',NULL,'bar');
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+VALUES (2, 500,100, 'El Limon',NULL,'pass');
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
+VALUES (3, 20000, 500, 'Juan David Ochoa',NULL,'white');
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
+VALUES (4, 10500, 1050, 'El Loco',NULL,'abc');
 
 UPDATE DrugLord SET WLID = '4' WHERE DLID = '1';
 UPDATE DrugLord SET WLID = '1' WHERE DLID = '4';
@@ -238,32 +260,32 @@ INSERT INTO Territory (TID, Name) VALUES(0,'Miami');
 INSERT INTO Territory (TID, Name) VALUES(0,'New York');
 INSERT INTO Territory (TID, Name) VALUES(0,'Cali');
 
-INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating)
+INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES(0, 100, 10,'El Negro',
 	(SELECT dl.dlid
 		FROM DrugLord dl
-		WHERE dl.name = 'Pablo Escobar'),5);
+		WHERE dl.name = 'Pablo Escobar'),5,'dealer');
 		
-INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating)
+INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES(1, 222, 50, 'Jesse Pinkman',
 	(SELECT dl.dlid 
 		FROM DrugLord dl 
-		WHERE dl.name = 'El Loco'),3);
-INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating)
+		WHERE dl.name = 'El Loco'),3,'foo');
+INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES( 2, 68, 19, 'Bruno Vasquez',
 	(SELECT dl.dlid
 		FROM Druglord dl
-		WHERE dl.name = 'Pablo Escobar'),3);
-INSERT INTO Dealer(DID, Cash, Cocaine, Name, DLID, Rating)
+		WHERE dl.name = 'Pablo Escobar'),3,'lemon');
+INSERT INTO Dealer(DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES ( 3, 100, 294, 'Gabriel Mardin',
 	(SELECT dl.dlid
 		From Druglord dl
-		Where dl.name = 'Gonzalo Gacha'),1);
-INSERT INTO Dealer(DID, Cash, Cocaine, Name, DLID, Rating)
+		Where dl.name = 'Gonzalo Gacha'),1,'user');
+INSERT INTO Dealer(DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES (4, 500, 100, 'Tom Brady',
 	(SELECT dl.dlid
 		From Druglord dl
-		Where dl.name = 'Juan David Ochoa'),0);
+		Where dl.name = 'Juan David Ochoa'),0,'cool');
 
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
 VALUES (0,10,1,CURRENT_TIMESTAMP,
