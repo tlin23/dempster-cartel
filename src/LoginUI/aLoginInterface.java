@@ -105,7 +105,7 @@ public class aLoginInterface {
 						String dBPass = rs.getString("password");
 						if(dBPass.equals(pass)){
 							Connection con1 = con;
-							new addictInterface(con1);
+							new addictInterface(con1, user);
 							mainFrame.dispose();
 						}else{
 							errorMsg.setText("Invalid Username");
