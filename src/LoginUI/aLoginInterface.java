@@ -108,9 +108,8 @@ public class aLoginInterface {
 							new addictInterface(con1, user);
 							mainFrame.dispose();
 						}else{
-							errorMsg.setText("Invalid Username");
 							passwordField.setText("");
-							usernameField.setText("");
+							errorMsg.setText("Invalid Password");
 						}
 					} else {
 						errorMsg.setText("Invalid Login. Please try again");
@@ -127,6 +126,7 @@ public class aLoginInterface {
 		//populate password field and login button with event handler
 		passwordField.addActionListener(userListener);
 		loginButton.addActionListener(userListener);
+		
 		mainFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				System.exit(0);

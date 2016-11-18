@@ -31,7 +31,7 @@ public class addictInterface{
 		GridBagLayout gb = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 		contentPane.setLayout(gb);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30 , 30 ,30));
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10 , 10 ,10));
 		
 		JButton exitButton = new JButton("Log Out");
 		JButton viewAddicts = new JButton("View Addicts");
@@ -77,7 +77,13 @@ public class addictInterface{
 				//mainFrame.dispose(); //not yet
 			}
 		});
-		
+			mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mainFrame.pack();
+		// center the frame
+		Dimension d = mainFrame.getToolkit().getScreenSize();
+		Rectangle r = mainFrame.getBounds();
+		mainFrame.setLocation((d.width - r.width)/2, (d.height - r.height)/2);
+		mainFrame.setVisible(true);
 		viewDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showDealers();
@@ -90,9 +96,33 @@ public class addictInterface{
 				mainFrame.dispose();
 			}
 		});
+		
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//Resize window
+		mainFrame.pack();
+	    Dimension d1 = mainFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = mainFrame.getBounds();
+	    mainFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+	    
+	    //other default window features
+	    mainFrame.setVisible(true);	
 	}
 	
 	private void showDealers(){
+		JFrame dataFrame = new JFrame("Dealers");
+		JPanel contentPane = new JPanel();
+		dataFrame.setContentPane(contentPane);
+		
+		BorderLayout layout = new BorderLayout();
+		contentPane.setLayout(layout);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		
+		String[] colNames = { "Dealer ID", "Name", "Cocaine (kg)", "Cash $$$$", "Number Reserved" };
+		DefaultTableModel model = new DefaultTableModel() {
+			public boolean isCellEditable(int rowIndex, int ColIndex) {
+				return false;
+			}
+		};
 		
 	}
 	
