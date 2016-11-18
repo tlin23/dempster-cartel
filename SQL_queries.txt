@@ -73,19 +73,21 @@ SELECT * FROM Addict, Dealer, Druglord, Supplier
 Select * From SupplyTrans, DistTrans
 
 // ===== View Supply Transaction =====
-“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d”
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.SID = s.SID and st.DLID = d.DLID”
 
 // STID
-“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.STID = “ + STID
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord 
+From SupplyTrans st, Supplier s, DrugLord d 
+WHERE st.SID = s.SID and st.DLID = d.DLID and st.STID = “ + STID
 
 // Date (how do you specify type date???)
-“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.transDate = “ + Date
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.SID = s.SID and st.DLID = d.DLID and st.transDate = “ + Date
 
 // Cocaine > CocaineValue
-“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.cocaine > “ + CocaineValue
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.SID = s.SID and st.DLID = d.DLID and st.cocaine > “ + CocaineValue
 
 // Cash > CashValue
-“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.cash > “ + CashValue
+“Select st.STID, st.cash, st.cocaine, st.transDate, s.name as SupplierName, d.name as DrugLord From SupplyTrans st, Supplier s, DrugLord d WHERE st.SID = s.SID and st.DLID = d.DLID and st.cash > “ + CashValue
 
 
 
@@ -262,3 +264,86 @@ VALUES(“ + DTID + “,” + Cash + “,” + Cocaine + “,” + TransDate + �
 
 // Update Addict
 “UPDATE Addict SET Cash = Cash - “ + CashValue  + “ WHERE DID = “ + DID
+
+
+
+
+
+// =========================== Fun Shit ===========================
+
+
+// ====== Division: Method 1 ======
+// Helper: All transactions involving Addict AID
+“Select DTID
+FROM DistTrans
+WHERE AID = “ + AID
+
+
+// Helper: Find all dealers that have dealt with Addict AID
+SELECT DISTINCT d.Name
+FROM Dealer d, DistTrans t
+WHERE t.DID = d.DID and t.DID = ANY (Select DID FROM DistTrans WHERE AID = “ + AID + “)”
+
+
+// Names of all Dealers w/ transactions not involving Addict AID
+SELECT DISTINCT d.Name
+FROM Dealer d, DistTrans t
+WHERE t.DID = d.DID and t.DID != ALL (Select DID FROM DistTrans WHERE AID = “ + AID + “)”
+
+
+
+
+// ====== Division: Method 2 ======
+// Helper: all DID who have made Deals not involving Addict AID
+(SELECT DID FROM DistTrans)
+MINUS
+(SELECT DID FROM DistTrans WHERE AID = “ + AID + “)”
+
+// Names of all Dealers w/ transactions not involving Addict AID
+“SELECT d.Name FROM Dealer d, DistTrans t WHERE t.DID = d.DID and t.DID IN ((SELECT DID FROM DistTrans) MINUS (SELECT DID FROM DistTrans WHERE AID = “ + AID + “)”
+
+
+
+// ====== Aggregation ======
+
+// ==== Aggregation 1 ===
+// Find total money owed by all Addicts
+Select SUM(Cash) as TotalCashOwed
+FROM Addict
+GROUP BY Cash
+
+
+// === Aggregation 2 ====
+// Select dealer with most cash on hand
+SELECT Name, Cash, Cocaine
+FROM Dealer
+Where Cash = (SELECT max(Cash) From Dealer)
+
+// Order dealers by amount of cash on hand
+SELECT Name, Cash, Cocaine
+FROM Dealer
+ORDER By Cash Desc, Cocaine Desc;
+
+
+
+
+
+// ====== Nested Aggregation w/ Group-By ======
+// Helper: calculate total $$, cocaine in DistTrans for Dealer DID
+Select SUM(Cash) as TotalSales, SUM(Cocaine) as TotalCocaine
+FROM DistTrans
+WHERE DID = 1
+GROUP BY DID
+
+// Helper: calculate total $$, cocaine in DistTrans for all Dealers
+Select DID, SUM(Cash) as TotalSales, SUM(Cocaine) as TotalCocaine
+FROM DistTrans
+GROUP BY DID
+Order BY TotalSales Desc, TotalCocaine Desc
+
+// calculate total $$, cocaine in DistTrans for all Dealers (use DealerName)
+Select d.Name, SUM(t.Cash) as TotalSales, SUM(t.Cocaine) as TotalCocaine
+FROM Dealer d, DistTrans t
+WHERE d.DID = t.DID
+Group By d.Name
+Order BY TotalSales Desc, TotalCocaine Desc
