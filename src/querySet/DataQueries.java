@@ -136,6 +136,30 @@ public class DataQueries {
 		}
 		return l;
 	}
+	
+	public static List<SupplyTransData> getSupplyTrans() throws SQLException {
+		String getAddictsStmnt = "select * from supplytrans";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictsStmnt);
+			return supplyTrans(rs);
+		}
+	}
+	
+	private static List<SupplyTransData> supplyTrans(ResultSet results) throws SQLException {
+		List<SupplyTransData> l = new ArrayList<>();
+		while(results.next()){
+			SupplyTransData d = new SupplyTransData();
+			d.STID = results.getInt("STID");
+			d.cash = results.getInt("cash");
+			d.cocaine = results.getInt("cocaine");
+			d.transDate = results.getDate("transDate");
+			d.SID = results.getInt("SID");
+			d.DLID = results.getInt("DLID");
+			l.add(d);
+		}
+		return l;
+	}
+	
 	private static java.sql.Date convertToSQLDate(Date date){
 		return new java.sql.Date(date.getTime());
 	}
@@ -147,6 +171,7 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+	
 	
 	
 	

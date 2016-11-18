@@ -39,6 +39,7 @@ public class drugLordInterface {
 		JButton viewSuppliers = new JButton("View All Suppliers");
 		JButton viewTerritories = new JButton("View All Territories");
 		JButton viewDistTrans = new JButton("View All Distribution Transactions");
+		JButton viewSupplyTrans = new JButton("View All Supply Transactions");
 		JLabel addictView = new JLabel ("Druglord View Menu");
 		
 		// Title
@@ -46,6 +47,15 @@ public class drugLordInterface {
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
+		
+		//view DistTrans button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(viewSupplyTrans, c);
+		contentPane.add(viewSupplyTrans);
 		
 		//view DistTrans button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -455,6 +465,68 @@ public class drugLordInterface {
 			    //other default window features
 			}
 		});
+		
+		viewSupplyTrans.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				showSupplyTrans();
+				//mainFrame.dispose(); //not yet
+			}
+
+			private void showSupplyTrans() {
+				JFrame dataFrame = new JFrame("View All Supply Transactions");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "STID", "Cash", "Cocaine", "TransDate", "SID", "DLID" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<SupplyTransData> supplyTransData = DataQueries.getSupplyTrans();
+					for (SupplyTransData d : supplyTransData) {
+						Object[] o = new Object[6];
+						o[0] = d.STID;
+						o[1] = d.cash;
+						o[2] = d.cocaine;
+						o[3] = d.transDate;
+						o[4] = d.SID;
+						o[5] = d.DLID;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}
+		});
+		
 		
 		
 		exitButton.addActionListener(new ActionListener(){
