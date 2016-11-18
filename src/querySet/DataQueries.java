@@ -38,14 +38,17 @@ public class DataQueries {
 		}
 	}
 	// Helper for getDealer
+	
 	private static List<DealerData> getDealers(ResultSet results) throws SQLException{
 		List<DealerData> l = new ArrayList<>();
 		while(results.next()){
 			DealerData d = new DealerData();
-			d.DLID = results.getInt("DID");
+			d.DID = results.getInt("DID");
 			d.name = results.getString("name");
 			d.cash = results.getInt("cash");
 			d.cocaine = results.getInt("cocaine");
+			d.DLID = results.getInt("DLID");
+			d.rating = results.getInt("rating");			
 			l.add(d);
 		}
 		return l;
