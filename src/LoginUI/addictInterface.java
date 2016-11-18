@@ -103,7 +103,7 @@ public class addictInterface{
 	}
 	
 	private void showDealers(){
-		JFrame dataFrame = new JFrame("Dealers");
+		final JFrame dataFrame = new JFrame("Dealers");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -118,7 +118,7 @@ public class addictInterface{
 			}
 		};
 		
-		JTable jt = new JTable();
+		final JTable jt = new JTable();
 		jt.setModel(model);
 		model.setColumnIdentifiers(colNames);
 		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -140,7 +140,7 @@ public class addictInterface{
 			System.out.println(ex.getMessage());
 			Login.showErrorConnecting(mainFrame);
 		}
-	
+
 		jt.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				if (e.getClickCount()== 2){
@@ -185,9 +185,9 @@ public class addictInterface{
 	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
 	}
 	
-	private void rateAddict(String name,int rating){
-		JTextField rateField;
-		JFrame dataFrame = new JFrame("Rate Dealer");		
+	private void rateAddict(final String name,int rating){
+		final JTextField rateField;
+		final JFrame dataFrame = new JFrame("Rate Dealer");		
 		JLabel titleLabel = new JLabel("Rate This Dealer!");
 		JButton rateButton = new JButton("Done");
 		JLabel nameLabel = new JLabel("Dealer Name: ");
@@ -299,7 +299,7 @@ public class addictInterface{
 	}
 	
 	private void showAddicts(){
-		JFrame dataFrame = new JFrame("Addict");
+		final JFrame dataFrame = new JFrame("Addict");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -358,9 +358,9 @@ public class addictInterface{
 	}
 	
 	private void addAddict(){
-		JTextField nameField;
-		JTextField cashField;
-		JFrame dataFrame = new JFrame("Add Addict");		
+		final JTextField nameField;
+		final JTextField cashField;
+		final JFrame dataFrame = new JFrame("Add Addict");		
 		JLabel regLabel = new JLabel("Register Here!");
 		JButton regButton = new JButton("Login");
 		JLabel nameLabel = new JLabel("Enter name: ");
