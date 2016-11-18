@@ -8,18 +8,36 @@ import java.util.Date;
 public class DataQueries {
 
 	public static Connection con;
-	//pass commands 
 	
-	static String getAddictsStmnt = "select * from addict";
+	public static List<DrugLordData> getDruglords() throws SQLException{
+		String getDruglordStmnt = "select * from druglord";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
 	public static List<AddictData> getAddicts() throws SQLException{
+		String getAddictsStmnt = "select * from addict";
 		try(Statement st = con.createStatement()){
 			ResultSet rs = st.executeQuery(getAddictsStmnt);
 			return getAddicts(rs);
 		}
 	}
 	
+	//Helper Methods 
+	private static List<DrugLordData> getDruglords(ResultSet results) throws SQLException{
+		List<DrugLordData> l = new ArrayList<>();
+		while(results.next()){
+			DrugLordData d = new DrugLordData();
+			d.DLID = results.getInt("DLID");
+			d.name = results.getString("name");
+			d.cash = results.getInt("cash");
+			l.add(d);
+		}
+		return l;
+	}
 	
-//Helper Methods 
 	private static List<AddictData> getAddicts(ResultSet results) throws SQLException{
 		List<AddictData> l = new ArrayList<>();
 		while(results.next()){
