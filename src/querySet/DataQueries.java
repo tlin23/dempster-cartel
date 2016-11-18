@@ -51,9 +51,24 @@ public class DataQueries {
 		return l;
 	}
 	
-	
-	
-	
+	public static List<SupplierData> getSuppliers() throws SQLException{
+		String getDruglordStmnt = "select * from supplier";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getSuppliers(rs);
+		}
+	}
+
+	private static List<SupplierData> getSuppliers(ResultSet results) throws SQLException {
+		List<SupplierData> l = new ArrayList<>();
+		while(results.next()){
+			SupplierData s = new SupplierData();
+			s.SID = results.getInt("SID");
+			s.name = results.getString("name");
+			l.add(s);
+		}
+		return l;
+	}
 	
 	public static List<AddictData> getAddicts() throws SQLException{
 		String getAddictsStmnt = "select * from addict";
@@ -86,4 +101,5 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+	
 }
