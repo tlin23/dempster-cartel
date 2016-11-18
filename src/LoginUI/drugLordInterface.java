@@ -120,7 +120,7 @@ public class drugLordInterface {
 	
 	private void showDruglords(){
 		
-		JFrame dataFrame = new JFrame("Druglord");
+		JFrame dataFrame = new JFrame("View Druglords");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -128,7 +128,7 @@ public class drugLordInterface {
 		contentPane.setLayout(layout);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		
-		String[] colNames = { "Name" };
+		String[] colNames = { "Name", "Cash", "Cocaine" };
 		DefaultTableModel model = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int ColIndex) {
 				return false;
@@ -146,9 +146,11 @@ public class drugLordInterface {
 		
 		try {
 			List<DrugLordData> druglordData = DataQueries.getDruglords();
-			for (DrugLordData a : druglordData) {
-				Object[] o = new Object[2];
-				o[0] = a.name;
+			for (DrugLordData dl : druglordData) {
+				Object[] o = new Object[3];
+				o[0] = dl.name;
+				o[1] = dl.cash;
+				o[2] = dl.cocaine;
 				model.addRow(o);
 			}
 		}

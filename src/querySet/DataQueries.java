@@ -29,11 +29,12 @@ public class DataQueries {
 	private static List<DrugLordData> getDruglords(ResultSet results) throws SQLException{
 		List<DrugLordData> l = new ArrayList<>();
 		while(results.next()){
-			DrugLordData d = new DrugLordData();
-			d.DLID = results.getInt("DLID");
-			d.name = results.getString("name");
-			d.cash = results.getInt("cash");
-			l.add(d);
+			DrugLordData dl = new DrugLordData();
+			dl.DLID = results.getInt("DLID");
+			dl.name = results.getString("name");
+			dl.cash = results.getInt("cash");
+			dl.cocaine = results.getInt("cocaine");
+			l.add(dl);
 		}
 		return l;
 	}
