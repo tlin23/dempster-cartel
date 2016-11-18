@@ -12,7 +12,7 @@ import querySet.*;
 
 public class drugLordInterface {
 	
-	// Window Frames in Addict UI
+	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
 	private String user;
@@ -33,9 +33,9 @@ public class drugLordInterface {
 		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10 , 10 ,10));
 		
 		JButton exitButton = new JButton("Log Out");
-		JButton viewAddicts = new JButton("View Addicts");
-		JButton viewDealers = new JButton("View Dealers");
-		JButton viewDruglords = new JButton("View Druglords");
+		JButton viewAddicts = new JButton("View All Addicts");
+		JButton viewDealers = new JButton("View All Dealers");
+		JButton viewDruglords = new JButton("View All Druglords");
 		JLabel addictView = new JLabel ("Druglord View Menu");
 		
 		// Title
@@ -120,7 +120,7 @@ public class drugLordInterface {
 	
 	private void showDruglords(){
 		
-		JFrame dataFrame = new JFrame("View Druglords");
+		JFrame dataFrame = new JFrame("View All Druglords");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -171,7 +171,7 @@ public class drugLordInterface {
 	}
 	
 	private void showDealers(){
-		JFrame dataFrame = new JFrame("View Dealers");
+		JFrame dataFrame = new JFrame("View All Dealers");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -222,7 +222,7 @@ public class drugLordInterface {
 	}
 	
 	private void showAddicts(){
-		JFrame dataFrame = new JFrame("Addict");
+		JFrame dataFrame = new JFrame("View All Addicts");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
