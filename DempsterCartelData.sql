@@ -75,7 +75,7 @@ CREATE TABLE Dealer(
 	Cocaine decimal(19,4) DEFAULT 0  NOT NULL,
 	Name VARCHAR(55),
 	DLID int NOT NULL,
-	Rating int NOT NULL,
+	Rating int,
 	dUserName varchar(25) not null,
     PRIMARY KEY (DID),
     FOREIGN KEY (dUserName) references DealerUser ON DELETE CASCADE,
@@ -275,7 +275,7 @@ INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES( 2, 68, 19, 'Bruno Vasquez',
 	(SELECT dl.dlid
 		FROM Druglord dl
-		WHERE dl.name = 'Pablo Escobar'),3,'lemon');
+		WHERE dl.name = 'Pablo Escobar'),NULL,'lemon');
 INSERT INTO Dealer(DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES ( 3, 100, 294, 'Gabriel Mardin',
 	(SELECT dl.dlid
