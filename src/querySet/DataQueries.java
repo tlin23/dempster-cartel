@@ -10,17 +10,17 @@ public class DataQueries {
 	public static Connection con;
 	//pass commands 
 	
-	static String getAddictsStmnt = "select * from addict ORDER BY AID";
-	public static List<AddictData> getAddicts() throws SQLException{;
-		try(PreparedStatement st = con.prepareStatement(getAddictsStmnt)){
-			ResultSet results = st.executeQuery();
-			return resultsOFAddict(results);
+	static String getAddictsStmnt = "select * from addict";
+	public static List<AddictData> getAddicts() throws SQLException{
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictsStmnt);
+			return getAddicts(rs);
 		}
 	}
 	
 	
 //Helper Methods 
-	private static List<AddictData> resultsOFAddict(ResultSet results) throws SQLException{
+	private static List<AddictData> getAddicts(ResultSet results) throws SQLException{
 		List<AddictData> l = new ArrayList<>();
 		while(results.next()){
 			AddictData d = new AddictData();

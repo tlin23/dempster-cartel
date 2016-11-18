@@ -4,6 +4,9 @@ import java.awt.*;
 import java.sql.*;
 
 import javax.swing.*;
+
+import querySet.DataQueries;
+
 import java.awt.event.*;
 
 public class Login{
@@ -35,7 +38,7 @@ public class Login{
 					  "jdbc:oracle:thin:@localhost:1522:ug", "ora_h3b0b", "a14558143");
 	 
 		   System.out.println("Connection successful.");
-		    
+		    DataQueries.con = con;
 	    } catch( Exception e) {
 		   System.out.println("Connection failed\n" + e);
 	    }
@@ -123,6 +126,12 @@ public class Login{
 	public static void main(String[] args){		
 		new Login();
 	}
-
+	
+	public static void showErrorConnecting(JFrame frame) {
+		JOptionPane.showMessageDialog(frame,
+				"Error connecting to Oracle",
+				"Error",
+				JOptionPane.ERROR_MESSAGE);
+	}
 
 }

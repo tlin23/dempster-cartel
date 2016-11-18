@@ -77,13 +77,7 @@ public class addictInterface{
 				//mainFrame.dispose(); //not yet
 			}
 		});
-			mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		mainFrame.pack();
-		// center the frame
-		Dimension d = mainFrame.getToolkit().getScreenSize();
-		Rectangle r = mainFrame.getBounds();
-		mainFrame.setLocation((d.width - r.width)/2, (d.height - r.height)/2);
-		mainFrame.setVisible(true);
+		
 		viewDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showDealers();
@@ -109,7 +103,11 @@ public class addictInterface{
 	}
 	
 	private void showDealers(){
-		JFrame dataFrame = new JFrame("Dealers");
+		
+	}
+	
+	private void showAddicts(){
+		JFrame dataFrame = new JFrame("Addict");
 		JPanel contentPane = new JPanel();
 		dataFrame.setContentPane(contentPane);
 		
@@ -117,16 +115,42 @@ public class addictInterface{
 		contentPane.setLayout(layout);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 		
-		String[] colNames = { "Dealer ID", "Name", "Cocaine (kg)", "Cash $$$$", "Number Reserved" };
+		String[] colNames = { "Name" };
 		DefaultTableModel model = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int ColIndex) {
 				return false;
 			}
 		};
 		
-	}
-	
-	private void showAddicts(){
+		JTable jt = new JTable();
+		jt.setModel(model);
+		model.setColumnIdentifiers(colNames);
+		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		jt.setRowHeight(50);
+		jt.setMinimumSize(new Dimension(200,50));
+		dataFrame.setMinimumSize(new Dimension(300, 100));
+		contentPane.add(new JScrollPane(jt));
 		
+		try {
+			List<AddictData> addictData = DataQueries.getAddicts();
+			for (AddictData a : addictData) {
+				Object[] o = new Object[2];
+				o[0] = a.name;
+				model.addRow(o);
+			}
+		}
+		catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			Login.showErrorConnecting(mainFrame);
+		}
+		dataFrame.pack();
+		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dataFrame.setVisible(true);
+		
+	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = dataFrame.getBounds();
+	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+	    
+	    //other default window features
 	}
 }
