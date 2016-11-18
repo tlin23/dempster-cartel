@@ -108,13 +108,13 @@ public class dlRegInterface {
 		gb.setConstraints(cashField, c);
 		contentPane.add(cashField);
 				
-		// cash Label
+		// cocaine Label
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(cocaineLabel, c);
 		contentPane.add(cocaineLabel);
 										
-		// cash Field 
+		// cocaine Field 
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 0, 5, 10);
 		c.weightx=1.;
@@ -172,7 +172,6 @@ public class dlRegInterface {
 						
 						String addQuery = "insert into DrugLord values(0,?,?,?,NULL,?)";
 						st = con.prepareStatement(addQuery);
-						System.out.println(addQuery);
 						st.setString(1, cashst);
 						st.setString(2, cocaine);
 						st.setString(3, name);
