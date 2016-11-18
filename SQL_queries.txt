@@ -1,0 +1,112 @@
+CPSC 304 - SQL Queries
+
+
+// =========================== View People ===========================
+
+// == View all types of people ==
+SELECT * FROM Addict, Dealer, Druglord, Supplier
+
+
+
+// === View Addict given criteria ===
+// AID
+“SELECT Name, Cash FROM Addict WHERE AID = “ + AID
+
+// name
+“SELECT Name, Cash FROM Addict WHERE Name Like '%“ + Name + “%'”
+
+// Addicts with cash > CashValue
+“SELECT Name, Cash FROM Addict WHERE Cash > “ + CashValue
+
+
+// === View Dealer given criteria ===
+// DID
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.DID = “ + DID + “ and d.DLID = l.DLID”
+
+// name
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.Name Like '%” + Name “%' and d.DLID = l.DLID”
+
+// Dealer with cash > CashValue
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.Cash > “ + CashValue + “ and d.DLID = l.DLID”
+
+// Dealer with cocaine > CocaineValue
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.Cocaine > “ + CocaineValue + “ and d.DLID = l.DLID”
+
+// Rating > RatingValue
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.Rating > “ + Rating Value + “ and d.DLID = l.DLID”
+
+// Rating < RatingValue
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.Rating < “ + Rating Value + “ and d.DLID = l.DLID”
+
+// Find all dealers working under Druglord DLID
+“SELECT d.Name, d.Cash, d.Cocaine, d.Rating, l.Name as DrugLordName FROM Dealer d, DrugLord l WHERE d.DLID = “ + DLID + “ and d.DLID = l.DLID”
+
+
+// === View DrugLord given criteria ===
+// DLID
+“SELECT d1.Name, d1.Cash, d1.Cocaine, d2.Name as WarringLordName FROM DrugLord d1, DrugLord d2 WHERE d1.DLID = “ + DLID + “ and d1.WLID = d2.DLID”
+
+// name
+“SELECT d1.Name, d1.Cash, d1.Cocaine, d2.Name as WarringLordName FROM DrugLord d1, DrugLord d2 WHERE d1.Name Like '%“ + Name + “%' and d1.WLID = d2.DLID”
+
+// DrugLord with cash > CashValue
+“SELECT d1.Name, d1.Cash, d1.Cocaine, d2.Name as WarringLordName FROM DrugLord d1, DrugLord d2 WHERE d1.Cash > “ + CashValue + “ and d1.WLID = d2.DLID”
+
+// DrugLord with cocaine > CocaineValue
+“SELECT d1.Name, d1.Cash, d1.Cocaine, d2.Name as WarringLordName FROM DrugLord d1, DrugLord d2 WHERE d1.Cocaine > “ + CocaineValue + “ and d1.WLID = d2.DLID”
+
+// Find all drugLords at war with DrugLord DLID
+“SELECT d1.Name, d1.Cash, d1.Cocaine, d2.Name as WarringLordName FROM DrugLord d1, DrugLord d2 WHERE d1.WLID = “ + DLID + “ and d1.WLID = d2.DLID” 
+
+
+// === View Supplier given criteria ===
+// SID
+“SELECT Name FROM Supplier WHERE SID = “ + SID
+
+// name
+“SELECT Name FROM Supplier WHERE Name Like '%“ + Name + “%'”
+
+
+
+
+// =========================== View Transactions ===========================
+Select * From SupplyTrans, DistTrans
+
+// == View Supply Transaction ==
+Select * From SupplyTrans 
+
+// STID
+
+
+// == View Distribution Transaction ==
+Select * From DistTrans
+
+
+
+
+
+
+
+// =========================== Adding Shit ===========================
+
+// Add Drug Lord
+“INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID)
+VALUES (DLID, cash, cocaine, name, warWith)”
+
+// Remove Drug Lord
+
+// Add Supplier
+// Remove Supplier
+
+
+// Add Dealer
+// Remove Dealer
+
+
+// Add Addict
+// Remove Addict
+
+
+
+
+// =========================== Territory Shit ===========================
