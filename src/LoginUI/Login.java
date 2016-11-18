@@ -28,28 +28,11 @@ public class Login{
 		   System.exit(-1);
 	    }
 		
-		try {
-			   System.out.println("Selecting...");
-
-			   // con is a Connection object 
-				Statement stmt = con.createStatement();
-				
-//				int rowCount = stmt.executeUpdate("INSERT INTO branch VALUES (20, 'Richmond Main', " +
-//		      "'18122 No.5 Road', 'Richmond', 5252738)");
-				
-				ResultSet rs = stmt.executeQuery("SELECT * FROM Addict");
-				while(rs.next()) {
-					System.out.println(rs.getString("AID") + " " + rs.getString("Name"));
-				}
-		    } catch (SQLException ex) {
-			   System.out.println(ex);
-		    }
-		
 		try {  
 		   System.out.println("Connecting to NetDB2 ...");
 	 
 		   con = DriverManager.getConnection(
-					  "jdbc:oracle:thin:@localhost:1522:ug", "ora_h7x9a", "a29579133");
+					  "jdbc:oracle:thin:@localhost:1522:ug", "ora_h3b0b", "a14558143");
 	 
 		   System.out.println("Connection successful.");
 		    
