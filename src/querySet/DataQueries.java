@@ -90,6 +90,49 @@ public class DataQueries {
 		return l;
 	}
 	
+	public static List<TerritoryData> getTerritories() throws SQLException {
+		String getAddictsStmnt = "select * from territory";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictsStmnt);
+			return getTerritories(rs);
+		}
+	}
+	
+	private static List<TerritoryData> getTerritories(ResultSet results) throws SQLException {
+		List<TerritoryData> l = new ArrayList<>();
+		while(results.next()){
+			TerritoryData d = new TerritoryData();
+			d.TID = results.getInt("TID");
+			d.name = results.getString("name");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	public static List<DistTransData> getDistTrans() throws SQLException {
+		String getAddictsStmnt = "select * from disttrans";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictsStmnt);
+			return getDistTrans(rs);
+		}
+	}
+	
+	private static List<DistTransData> getDistTrans(ResultSet results) throws SQLException {
+		List<DistTransData> l = new ArrayList<>();
+		while(results.next()){
+			DistTransData d = new DistTransData();
+			d.DTID = results.getInt("DTID");
+			d.cash = results.getInt("cash");
+			d.cocaine = results.getInt("cocaine");
+			d.transDate = results.getDate("transDate");
+			d.DID = results.getInt("DID");
+			d.DLID = results.getInt("DLID");
+			d.TID = results.getInt("TID");
+			d.AID = results.getInt("AID");
+			l.add(d);
+		}
+		return l;
+	}
 	private static java.sql.Date convertToSQLDate(Date date){
 		return new java.sql.Date(date.getTime());
 	}
@@ -101,5 +144,7 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+	
+	
 	
 }
