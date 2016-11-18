@@ -266,6 +266,8 @@ public class drugLordInterface {
 				
 				try {
 					List<DrugLordData> druglordData = DataQueries.getDruglords();
+					System.out.print("poop ");
+					System.out.println(druglordData.size());
 					for (DrugLordData dl : druglordData) {
 						Object[] o = new Object[3];
 						o[0] = dl.name;
@@ -531,6 +533,7 @@ public class drugLordInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				new Login();
 				mainFrame.dispose();
 			}
 		});

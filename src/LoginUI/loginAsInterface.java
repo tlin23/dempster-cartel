@@ -15,6 +15,7 @@ public class loginAsInterface {
 		JButton dlButton = new JButton("DrugLord");
 		JButton drButton = new JButton("Dealer");
 		JButton aButton = new JButton("Addict");
+		JButton backButton = new JButton("Back");
 		
 		//Create and populate the window
 		JPanel contentPane = new JPanel();
@@ -58,6 +59,24 @@ public class loginAsInterface {
 		c.anchor = GridBagConstraints.CENTER;
 		gb.setConstraints(aButton, c);
 		contentPane.add(aButton);
+		
+		//Back Button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(backButton, c);
+		contentPane.add(backButton);
+		
+		ActionListener backListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new Login();
+				mainFrame.dispose();
+			}
+		};
+		//Drug Lord button event handler
+		backButton.addActionListener(backListener);
 		
 		ActionListener dlListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){

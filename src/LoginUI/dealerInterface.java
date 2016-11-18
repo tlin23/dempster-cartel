@@ -393,6 +393,7 @@ public class dealerInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				new Login();
 				mainFrame.dispose();
 			}
 		});

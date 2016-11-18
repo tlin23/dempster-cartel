@@ -26,6 +26,7 @@ public class aLoginInterface {
 		passwordField = new JPasswordField(10);
 		passwordField.setEchoChar('*');
 		JButton loginButton = new JButton("Login");
+		JButton backButton = new JButton("Back");
 		
 		//Populate window
 		JPanel contentPane = new JPanel();
@@ -80,6 +81,15 @@ public class aLoginInterface {
 		gb.setConstraints(loginButton, c);
 		contentPane.add(loginButton);
 		
+		//Back button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(backButton, c);
+		contentPane.add(backButton);
+		
 		//Error message
 		final JLabel errorMsg = new JLabel("");
 		errorMsg.setForeground(Color.red);
@@ -87,6 +97,17 @@ public class aLoginInterface {
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(errorMsg, c);
 		contentPane.add(errorMsg);
+		
+		
+		ActionListener backListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new loginAsInterface(con);
+				mainFrame.dispose();
+			}
+		};
+		//Back button event handler
+		backButton.addActionListener(backListener);
+		
 		
 		ActionListener userListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
