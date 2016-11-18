@@ -83,7 +83,7 @@ public class loginAsInterface {
 				mainFrame.dispose();
 			}
 		};
-		//Dealer button event handler
+		//Addict button event handler
 		aButton.addActionListener(aListener);
 	
 		// closing window

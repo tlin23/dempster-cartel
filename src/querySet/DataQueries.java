@@ -16,16 +16,7 @@ public class DataQueries {
 			return getDruglords(rs);
 		}
 	}
-	
-	public static List<AddictData> getAddicts() throws SQLException{
-		String getAddictsStmnt = "select * from addict";
-		try(Statement st = con.createStatement()){
-			ResultSet rs = st.executeQuery(getAddictsStmnt);
-			return getAddicts(rs);
-		}
-	}
-	
-	//Helper Methods 
+	// Helper for getDruglords
 	private static List<DrugLordData> getDruglords(ResultSet results) throws SQLException{
 		List<DrugLordData> l = new ArrayList<>();
 		while(results.next()){
@@ -39,6 +30,39 @@ public class DataQueries {
 		return l;
 	}
 	
+	public static List<DealerData> getDealers() throws SQLException{
+		String getDruglordStmnt = "select * from dealer";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDealers(rs);
+		}
+	}
+	// Helper for getDealer
+	private static List<DealerData> getDealers(ResultSet results) throws SQLException{
+		List<DealerData> l = new ArrayList<>();
+		while(results.next()){
+			DealerData d = new DealerData();
+			d.DLID = results.getInt("DID");
+			d.name = results.getString("name");
+			d.cash = results.getInt("cash");
+			d.cocaine = results.getInt("cocaine");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	
+	
+	
+	
+	public static List<AddictData> getAddicts() throws SQLException{
+		String getAddictsStmnt = "select * from addict";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictsStmnt);
+			return getAddicts(rs);
+		}
+	}
+	//Helper Methods 
 	private static List<AddictData> getAddicts(ResultSet results) throws SQLException{
 		List<AddictData> l = new ArrayList<>();
 		while(results.next()){

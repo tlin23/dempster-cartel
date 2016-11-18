@@ -105,7 +105,7 @@ public class dLoginInterface {
 						String dBPass = rs.getString("password");
 						if(dBPass.equals(pass)){
 							Connection con1 = con;
-							new drugLordInterface(con1);
+							new dealerInterface(con1);
 							mainFrame.dispose();
 						}else{
 							errorMsg.setText("Invalid Username");

@@ -171,7 +171,54 @@ public class drugLordInterface {
 	}
 	
 	private void showDealers(){
+		JFrame dataFrame = new JFrame("View Dealers");
+		JPanel contentPane = new JPanel();
+		dataFrame.setContentPane(contentPane);
 		
+		BorderLayout layout = new BorderLayout();
+		contentPane.setLayout(layout);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		
+		String[] colNames = { "Name", "Cash", "Cocaine" };
+		DefaultTableModel model = new DefaultTableModel() {
+			public boolean isCellEditable(int rowIndex, int ColIndex) {
+				return false;
+			}
+		};
+		
+		JTable jt = new JTable();
+		jt.setModel(model);
+		model.setColumnIdentifiers(colNames);
+		jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		jt.setRowHeight(50);
+		jt.setMinimumSize(new Dimension(200,50));
+		dataFrame.setMinimumSize(new Dimension(300, 100));
+		contentPane.add(new JScrollPane(jt));
+		
+		try {
+			List<DealerData> dealerData = DataQueries.getDealers();
+			for (DealerData d : dealerData) {
+				Object[] o = new Object[3];
+				o[0] = d.name;
+				o[1] = d.cash;
+				o[2] = d.cocaine;
+				model.addRow(o);
+			}
+		}
+		catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			Login.showErrorConnecting(mainFrame);
+		}
+		
+		dataFrame.pack();
+		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dataFrame.setVisible(true);
+		
+	    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+	    Rectangle r1 = dataFrame.getBounds();
+	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+	    
+	    //other default window features
 	}
 	
 	private void showAddicts(){
