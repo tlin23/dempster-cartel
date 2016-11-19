@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.Date;
 // SQLQueries added again
 
+import com.sun.xml.internal.ws.util.StringUtils;
+
 public class DataQueries {
 
 	public static Connection con;
@@ -53,6 +55,27 @@ public class DataQueries {
 		}
 		return l;
 	}
+	
+	public static List<DealerData> findDealersByName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Dealer WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDealers(rs);
+		}
+	}
+	
+	public static List<DealerData> findDealersByCashGreater(String cashGreater) throws SQLException {
+		if (cashGreater.equals("") || !cashGreater.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Dealer WHERE Cash > " + cashGreater;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDealers(rs);
+		}
+	}
+	
 	
 	public static List<SupplierData> getSuppliers() throws SQLException{
 		String getDruglordStmnt = "select * from supplier";
@@ -265,8 +288,5 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
-	
-	
-	
-	
+
 }
