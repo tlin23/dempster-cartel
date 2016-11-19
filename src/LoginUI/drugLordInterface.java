@@ -40,6 +40,9 @@ public class drugLordInterface {
 		JButton viewTerritories = new JButton("View All Territories");
 		JButton viewDistTrans = new JButton("View All Distribution Transactions");
 		JButton viewSupplyTrans = new JButton("View All Supply Transactions");
+		JButton viewSummaryDealers = new JButton("View Summary of Dealer Sales");
+		JButton viewDealerMostCash = new JButton("View Dealer with Most Owed Cash");
+		JButton viewTotalCashDealers = new JButton("View Total Money To Collect From Dealers (and their Addicts)");
 		JLabel addictView = new JLabel ("Druglord View Menu");
 		
 		// Title
@@ -47,6 +50,9 @@ public class drugLordInterface {
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
+		
+		
+		
 		
 		//view Supply button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -110,6 +116,33 @@ public class drugLordInterface {
 		c.anchor = GridBagConstraints.CENTER;
 		gb.setConstraints(viewTerritories, c);
 		contentPane.add(viewTerritories);
+		
+		//viewDealerMostCash button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(viewDealerMostCash, c);
+		contentPane.add(viewDealerMostCash);
+		
+		//viewTotalCashDealers button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(viewTotalCashDealers, c);
+		contentPane.add(viewTotalCashDealers);
+		
+		//view Dealer Summary button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(viewSummaryDealers, c);
+		contentPane.add(viewSummaryDealers);
 
 		//Logout button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -119,6 +152,7 @@ public class drugLordInterface {
 		c.anchor = GridBagConstraints.CENTER;
 		gb.setConstraints(exitButton, c);
 		contentPane.add(exitButton);
+		
 		
 		viewAddicts.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -527,6 +561,182 @@ public class drugLordInterface {
 			    
 			    //other default window features
 			}
+		});
+		
+		
+		viewTotalCashDealers.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				showTotalCashDealers();
+				//mainFrame.dispose(); //not yet
+			}
+			private void showTotalCashDealers(){
+				JFrame dataFrame = new JFrame("View Total Money To Collect From Dealers (and their Addicts)");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name", "Total Cash To Collect"};
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<DealerData> dealerData = DataQueries.getTotalCashDealers();
+					for (DealerData d : dealerData) {
+						Object[] o = new Object[2];
+						o[0] = d.name;
+						o[1] = d.cash;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}			
+
+		});
+		
+		
+		viewDealerMostCash.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				showDealerMostCash();
+				//mainFrame.dispose(); //not yet
+			}
+			private void showDealerMostCash(){
+				JFrame dataFrame = new JFrame("View Dealer with Most Owed Cash");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name", "Cash", "Cocaine" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<DealerData> dealerData = DataQueries.getDealerMostCash();
+					for (DealerData d : dealerData) {
+						Object[] o = new Object[3];
+						o[0] = d.name;
+						o[1] = d.cash;
+						o[2] = d.cocaine;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}			
+
+		});
+		
+		
+		viewSummaryDealers.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				showSummaryDealers();
+				//mainFrame.dispose(); //not yet
+			}
+			private void showSummaryDealers(){
+				JFrame dataFrame = new JFrame("View Summary of Dealer Sales");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+				
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+				
+				String[] colNames = { "Name", "Total Sales", "Total Cocaine" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+				
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+				
+				try {
+					List<DealerData> dealerData = DataQueries.getSummaryDealers();
+					for (DealerData d : dealerData) {
+						Object[] o = new Object[3];
+						o[0] = d.name;
+						o[1] = d.cash;
+						o[2] = d.cocaine;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+				
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+				
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+			    
+			    //other default window features
+			}			
+
 		});
 		
 		

@@ -160,6 +160,100 @@ public class DataQueries {
 		return l;
 	}
 	
+
+	public static List<DealerData> getTotalCashDealers() throws SQLException{
+		String getTotalCashDealersStmnt = "Select d.NAME, (SUM(a.Cash) + d.Cash) as TotalCash "
+										  + "From DistTrans t, Addict a, Dealer d "
+										  + "Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = 1) "
+										  + "GROUP BY d.NAME, d.Cash";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getTotalCashDealersStmnt);
+			return getTotalCashDealers(rs);
+		}
+	}
+	// Helper for getTotalCashDealers
+	private static List<DealerData> getTotalCashDealers(ResultSet results) throws SQLException{
+		List<DealerData> l = new ArrayList<>();
+		while(results.next()){
+			DealerData d = new DealerData();
+			d.name = results.getString("name");
+			d.cash = results.getInt("TotalCash");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	
+	
+	public static List<DealerData> getDealerMostCash() throws SQLException{
+		String getDealerMostCashStmnt = "SELECT Name, Cash, Cocaine "
+										+ "FROM Dealer "
+										+ "Where Cash = (SELECT max(Cash) From Dealer)";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDealerMostCashStmnt);
+			return getDealerMostCash(rs);
+		}
+	}
+	// Helper for getDealerMostCash
+	private static List<DealerData> getDealerMostCash(ResultSet results) throws SQLException{
+		List<DealerData> l = new ArrayList<>();
+		while(results.next()){
+			DealerData d = new DealerData();
+			d.name = results.getString("name");
+			d.cash = results.getInt("cash");
+			d.cocaine = results.getInt("cocaine");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	
+	
+	public static List<DealerData> getSummaryDealers() throws SQLException{
+		String getSummaryDealersStmnt = "Select d.Name, SUM(t.Cash) as TotalSales, SUM(t.Cocaine) as TotalCocaine "
+										 + "FROM Dealer d, DistTrans t "
+										 + "WHERE d.DID = t.DID "
+										 + "Group By d.Name "
+										 + "Order BY TotalSales Desc, TotalCocaine Desc";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getSummaryDealersStmnt);
+			return getSummaryDealers(rs);
+		}
+	}
+	// Helper for getSummaryDealers
+	private static List<DealerData> getSummaryDealers(ResultSet results) throws SQLException{
+		List<DealerData> l = new ArrayList<>();
+		while(results.next()){
+			DealerData d = new DealerData();
+			d.name = results.getString("name");
+			d.cash = results.getInt("TotalSales");
+			d.cocaine = results.getInt("TotalCocaine");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	
+	
+	public static List<AddictData> getAddictDebt() throws SQLException{
+		String getAddictDebtStmnt = "Select SUM(Cash) as TotalCashOwed "
+									+ "FROM Addict";
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getAddictDebtStmnt);
+			return getAddictDebt(rs);
+		}
+	}
+	// Helper for getAddictDebt
+	private static List<AddictData> getAddictDebt(ResultSet results) throws SQLException{
+		List<AddictData> l = new ArrayList<>();
+		while(results.next()){
+			AddictData a = new AddictData();
+			a.cash = results.getInt("TotalCashOwed");			
+			l.add(a);
+		}
+		return l;
+	}
+	
 	private static java.sql.Date convertToSQLDate(Date date){
 		return new java.sql.Date(date.getTime());
 	}

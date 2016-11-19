@@ -293,7 +293,7 @@ WHERE t.DID = d.DID and t.DID != ALL (Select DID FROM DistTrans WHERE AID = “ 
 
 
 
-// ====== Division: Method 2 ======
+// ====== Division: Method 2 (D) ======
 // Helper: all DID who have made Deals not involving Addict AID
 (SELECT DID FROM DistTrans)
 MINUS
@@ -304,16 +304,19 @@ MINUS
 
 
 
-// ====== Aggregation ======
+// ====== Aggregation (D, DL) ======
 
 // ==== Aggregation 1 ===
 // Find total money owed by all Addicts
 Select SUM(Cash) as TotalCashOwed
 FROM Addict
-GROUP BY Cash
 
 
-// === Aggregation 2 ====
+// ===== Aggregation 1b? ===
+// Find all addicts owing money
+Select Name, Cash From Addict Where Cash > 0 Order by Cash Desc
+
+// === Aggregation 2 (DL) ====
 // Select dealer with most cash on hand
 SELECT Name, Cash, Cocaine
 FROM Dealer
@@ -328,7 +331,7 @@ ORDER By Cash Desc, Cocaine Desc;
 
 
 
-// ====== Nested Aggregation w/ Group-By ======
+// ====== Nested Aggregation w/ Group-By (D?, DL) 1 ======
 // Helper: calculate total $$, cocaine in DistTrans for Dealer DID
 Select SUM(Cash) as TotalSales, SUM(Cocaine) as TotalCocaine
 FROM DistTrans
@@ -342,8 +345,63 @@ GROUP BY DID
 Order BY TotalSales Desc, TotalCocaine Desc
 
 // calculate total $$, cocaine in DistTrans for all Dealers (use DealerName)
-Select d.Name, SUM(t.Cash) as TotalSales, SUM(t.Cocaine) as TotalCocaine
-FROM Dealer d, DistTrans t
-WHERE d.DID = t.DID
-Group By d.Name
-Order BY TotalSales Desc, TotalCocaine Desc
+“Select d.Name, SUM(t.Cash) as TotalSales, SUM(t.Cocaine) as TotalCocaine 
+FROM Dealer d, DistTrans t 
+WHERE d.DID = t.DID 
+Group By d.Name 
+Order BY TotalSales Desc, TotalCocaine Desc”
+
+
+
+
+// ====== Nested Aggregation w/ Group-By  2 ======
+// Drug Lord: view total cash each dealer owes a Drug Lord DLID
+
+// ====== Helper 1 =====
+// Find AID, and a.Cash for a DrugDealer DID
+“Select a.AID, a.Cash 
+From DistTrans t, Addict a
+Where t.AID = a.AID and DID = “ + DID
+
+
+// Find SUM(a.Cash) for a DrugDealer DID
+“Select SUM(a.Cash)
+From DistTrans t, Addict a
+Where t.AID = a.AID and t.DID = “ + DID
+
+
+// Find SUM(a.Cash), d.Cash for a DrugDealer DID
+“Select SUM(a.Cash), d.Cash
+From DistTrans t, Addict a, Dealer d
+Where t.AID = a.AID and t.DID = d.DID and t.DID = “ + DID
+GROUP BY d.Cash
+
+// Find (SUM(a.Cash) + d.Cash) for a DrugDealer DID
+“Select d.DID, (SUM(a.Cash) + d.Cash) as TotalCash
+From DistTrans t, Addict a, Dealer d
+Where t.AID = a.AID and t.DID = d.DID and t.DID = 1
+GROUP BY d.DID, d.Cash
+
+// ====== Helper 2 =====
+
+// Find DID for a DrugLord DLID
+“Select DID
+From Dealer
+Where DLID = “ + DLID
+
+
+// ==== Actual Function… ====
+// Drug Lord: view total cash each dealer owes a Drug Lord DLID=1
+Select d.NAME, (SUM(a.Cash) + d.Cash) as TotalCash
+From DistTrans t, Addict a, Dealer d
+Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = 1) 
+GROUP BY d.NAME, d.Cash
+
+
+// Java shit
+“Select d.NAME, (SUM(a.Cash) + d.Cash) as TotalCash
+From DistTrans t, Addict a, Dealer d
+Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = “ + DLID + “) 
+GROUP BY d.NAME, d.Cash
+
+
