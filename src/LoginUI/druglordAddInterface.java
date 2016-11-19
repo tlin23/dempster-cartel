@@ -10,19 +10,18 @@ import java.util.Date;
 import java.util.List;
 import querySet.*;
 
-public class drugLordInterface {
+public class druglordAddInterface {
 	
 	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
 	private String user;
 	
-	public drugLordInterface(final Connection con){
-		System.out.println("\nLogged in as Druglord");
+	public druglordAddInterface(final Connection con){
 		clientcon = con;
 		this.user = user;
 		
-		mainFrame = new JFrame("Druglord View");
+		mainFrame = new JFrame("Druglord Add View");
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
 		
@@ -32,58 +31,24 @@ public class drugLordInterface {
 		contentPane.setLayout(gb);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10 , 10 ,10));
 		
-		JButton exitButton = new JButton("Log Out");
-		JButton viewsButton = new JButton("Views");
-		JButton addButton = new JButton("Add People");
-		JButton makeTransButton = new JButton("Transactions");
-		JButton removeButton = new JButton("Remove people");
-		
-
-		JLabel druglordView = new JLabel ("Druglord View Menu");
+		JButton exitButton = new JButton("Back");
+		JButton addDruglordButton = new JButton("Add Druglord");
+		JLabel addictView = new JLabel ("Druglord View Menu");
 		
 		// Title
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 10, 5, 0);
-		gb.setConstraints(druglordView,c);
-		contentPane.add(druglordView);
+		gb.setConstraints(addictView,c);
+		contentPane.add(addictView);
 		
-		//views button
+		//add Druglord button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
 		c.weightx= 0;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.CENTER;
-		gb.setConstraints(viewsButton, c);
-		contentPane.add(viewsButton);
-		
-		//add button
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(5, 10, 10, 10);
-		c.weightx= 0;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.CENTER;
-		gb.setConstraints(addButton, c);
-		contentPane.add(addButton);
-		
-		//make trans button
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(5, 10, 10, 10);
-		c.weightx= 0;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.CENTER;
-		gb.setConstraints(makeTransButton, c);
-		contentPane.add(makeTransButton);
-		
-		//make trans button
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(5, 10, 10, 10);
-		c.weightx= 0;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.CENTER;
-		gb.setConstraints(removeButton, c);
-		contentPane.add(removeButton);
-
-
+		gb.setConstraints(addDruglordButton, c);
+		contentPane.add(addDruglordButton);
 
 		//Logout button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -95,23 +60,16 @@ public class drugLordInterface {
 		contentPane.add(exitButton);
 		
 		
-		viewsButton.addActionListener(new ActionListener(){
+		addDruglordButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
-				mainFrame.dispose();
-			}
-		});
-		
-		addButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				//new druglordAddInterface(con); TODO
-				mainFrame.dispose();
+				new dlRegInterface(con);
+				//mainFrame.dispose(); //not yet
 			}
 		});
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new Login();
+				new drugLordInterface(con);
 				mainFrame.dispose();
 			}
 		});
