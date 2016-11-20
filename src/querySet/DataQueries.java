@@ -18,7 +18,60 @@ public class DataQueries {
 			return getDruglords(rs);
 		}
 	}
-	// Helper for getDruglords
+	
+	public static List<DrugLordData> findDruglordsByName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
+	public static List<DrugLordData> findDruglordsByCashGreater(String cashGreater) throws SQLException {
+		if (cashGreater.equals("") || !cashGreater.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE Cash > " + cashGreater;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
+	public static List<DrugLordData> findDruglordsByCashLesser(String cashLesser) throws SQLException {
+		if (cashLesser.equals("") || !cashLesser.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE Cash < " + cashLesser;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
+	public static List<DrugLordData> findDruglordsByCocaineGreater(String cocaineGreater) throws SQLException {
+		if (cocaineGreater.equals("") || !cocaineGreater.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE Cocaine > " + cocaineGreater;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
+	public static List<DrugLordData> findDruglordsByCocaineLesser(String cocaineLesser) throws SQLException {
+		if (cocaineLesser.equals("") || !cocaineLesser.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE Cocaine < " + cocaineLesser;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
 	private static List<DrugLordData> getDruglords(ResultSet results) throws SQLException{
 		List<DrugLordData> l = new ArrayList<>();
 		while(results.next()){
@@ -39,7 +92,6 @@ public class DataQueries {
 			return getDealers(rs);
 		}
 	}
-	// Helper for getDealer
 	
 	private static List<DealerData> getDealers(ResultSet results) throws SQLException{
 		List<DealerData> l = new ArrayList<>();
@@ -176,8 +228,6 @@ public class DataQueries {
 		}
 	}
 
-	
-	//Helper Methods 
 	private static List<AddictData> getAddicts(ResultSet results) throws SQLException{
 		List<AddictData> l = new ArrayList<>();
 		while(results.next()){
@@ -362,6 +412,15 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+
+	
+
+	
+
+	
+
+	
+	
 	
 	
 	

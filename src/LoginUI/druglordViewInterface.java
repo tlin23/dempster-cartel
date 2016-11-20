@@ -43,6 +43,7 @@ public class druglordViewInterface {
 		JButton viewSummaryDealers = new JButton("View Summary of Dealer Sales");
 		JButton viewDealerMostCash = new JButton("View Dealer with Most Owed Cash");
 		JButton viewTotalCashDealers = new JButton("View Total Money To Collect From Dealers (and their Addicts)");
+		JButton findDruglord = new JButton("Find a Druglord");
 		JButton findDealer = new JButton("Find a Dealer");
 		JButton findSupplier = new JButton("Find a Supplier");
 		JButton findAddict = new JButton("Find a Addict");
@@ -53,6 +54,15 @@ public class druglordViewInterface {
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
+		
+		//Find Druglord button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(findDruglord, c);
+		contentPane.add(findDruglord);
 		
 		//Find Dealer button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -761,6 +771,13 @@ public class druglordViewInterface {
 			    //other default window features
 			}			
 
+		});
+		
+		findDruglord.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new findDruglordInterface(con);
+				mainFrame.dispose();
+			}
 		});
 		
 		findDealer.addActionListener(new ActionListener(){
