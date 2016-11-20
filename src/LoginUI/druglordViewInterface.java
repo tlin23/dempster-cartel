@@ -12,7 +12,7 @@ import querySet.*;
 
 public class druglordViewInterface {
 	
-	// Window Frames in Druglord UI
+	// Window Frames in Drug lord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
 	private String user;

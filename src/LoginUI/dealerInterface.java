@@ -125,7 +125,7 @@ public class dealerInterface {
 				contentPane.setLayout(layout);
 				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 				
-				String[] colNames = { "Name" };
+				String[] colNames = { "AID","Name" };
 				DefaultTableModel model = new DefaultTableModel() {
 					public boolean isCellEditable(int rowIndex, int ColIndex) {
 						return false;
@@ -145,7 +145,8 @@ public class dealerInterface {
 					List<AddictData> addictData = DataQueries.getAddicts();
 					for (AddictData a : addictData) {
 						Object[] o = new Object[2];
-						o[0] = a.name;
+						o[0] = a.AID;
+						o[1] = a.name;
 						model.addRow(o);
 					}
 				}
@@ -153,6 +154,277 @@ public class dealerInterface {
 					System.out.println(ex.getMessage());
 					Login.showErrorConnecting(mainFrame);
 				}
+				
+				jt.addMouseListener(new MouseAdapter(){
+					public void mouseClicked(MouseEvent e){
+						if (e.getClickCount()== 2){
+							JTable target = (JTable)e.getSource();
+							int row = target.getSelectedRow();
+							int column = target.getSelectedColumn();
+							
+							//System.out.println(row);
+							//System.out.println(column);
+							
+							int selectedAID = (int) jt.getModel().getValueAt(row,0);
+							
+							if(column == 0){
+					
+								editAddict(selectedAID);
+								dataFrame.dispose();
+								
+							}
+						}
+					}
+					
+					private void editAddict(int selectedAID) {
+						final JFrame dataFrame = new JFrame("Edit Addict");
+						JButton uButton = new JButton("Update");
+						JButton dButton = new JButton("Delete");
+						
+						JPanel contentPane = new JPanel();
+						dataFrame.setContentPane(contentPane);
+						
+						GridBagLayout gb = new GridBagLayout();
+						GridBagConstraints c = new GridBagConstraints();
+						contentPane.setLayout(gb);
+						contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+						
+						//Update Button
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(5, 10, 10, 10);
+						c.weightx= 0;
+						c.fill = GridBagConstraints.NONE;
+						c.anchor = GridBagConstraints.CENTER;
+						gb.setConstraints(uButton, c);
+						contentPane.add(uButton);
+
+						//Delete Button
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(5, 10, 10, 10);
+						c.weightx= 0;
+						c.fill = GridBagConstraints.NONE;
+						c.anchor = GridBagConstraints.CENTER;
+						gb.setConstraints(dButton, c);
+						contentPane.add(dButton);
+						
+						ActionListener uListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								updateAddict(selectedAID);
+								dataFrame.dispose();
+							}
+						};
+						//Drug Lord button event handler
+						uButton.addActionListener(uListener);
+						
+						ActionListener dListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								deleteAddict(selectedAID);
+								dataFrame.dispose();
+							}
+						};
+						
+						dButton.addActionListener(dListener);
+						
+						dataFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						
+						//Resize window
+						dataFrame.pack();
+						Dimension d = dataFrame.getToolkit().getScreenSize();
+						Rectangle r = dataFrame.getBounds();
+						dataFrame.setLocation((d.width - r.width)/2, (d.height - r.height)/2);
+							    
+						//other default window features
+						dataFrame.setVisible(true);
+						
+					}
+						
+					private void updateAddict(int updateAID){
+						final JTextField  nameField;
+						final JTextField cashField;
+						final JFrame dataFrame = new JFrame("Update Addict");		
+						JLabel titleLabel = new JLabel("Update Addict: "+ updateAID);
+						JButton updateButton = new JButton("Update");
+						JLabel nameLabel = new JLabel("Addict New Name: ");
+						JLabel cashLabel = new JLabel("Cash: ");
+						nameField = new JTextField(10);
+						cashField = new JTextField (10);
+						
+						JPanel contentPane = new JPanel();
+						dataFrame.setContentPane(contentPane);
+						
+						GridBagLayout gb = new GridBagLayout();
+						GridBagConstraints c = new GridBagConstraints();
+						contentPane.setLayout(gb);
+						contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+						
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(titleLabel,c);
+						contentPane.add(titleLabel);
+						
+						// name Label
+						c.gridwidth = GridBagConstraints.RELATIVE;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(nameLabel, c);
+						contentPane.add(nameLabel);
+								
+						// name Field 
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 0, 5, 10);
+						c.weightx=1.;
+						c.fill = GridBagConstraints.NONE;
+						gb.setConstraints(nameField, c);
+						contentPane.add(nameField);
+								
+						// cash Label
+						c.gridwidth = GridBagConstraints.RELATIVE;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(cashLabel, c);
+						contentPane.add(cashLabel);
+								
+						// cash Field 
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 0, 5, 10);
+						c.weightx=1.;
+						c.fill = GridBagConstraints.NONE;
+						gb.setConstraints(cashField, c);
+						contentPane.add(cashField);
+						
+						//rate button
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(5, 10, 10, 10);
+						c.weightx= 0;
+						c.fill = GridBagConstraints.NONE;
+						c.anchor = GridBagConstraints.CENTER;
+						gb.setConstraints(updateButton, c);
+						contentPane.add(updateButton);
+						
+						//Error message
+						final JLabel errorMsg = new JLabel("");
+						errorMsg.setForeground(Color.red);
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(errorMsg, c);
+						contentPane.add(errorMsg);
+						
+						ActionListener userListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e) {
+								
+								String newNameSt = nameField.getText();
+								String cashSt = cashField.getText();
+		
+								
+								try{
+									PreparedStatement st;
+									ResultSet rs;														
+									String reQuery = "UPDATE addict SET cash = ?,name = ? WHERE AID = ?";
+									st = con.prepareStatement(reQuery);
+									st.setString(1, cashSt);
+									st.setString(2, newNameSt);
+									st.setString(3, Integer.toString(updateAID));
+									rs = st.executeQuery();
+										
+									showAddicts();
+									dataFrame.dispose();								
+								}catch(SQLException e1){
+									System.out.println("Error: " + e1.getMessage());
+									errorMsg.setText("Invalid Input");
+								}
+								
+	
+							}
+						};
+						
+						nameField.addActionListener(userListener);
+						updateButton.addActionListener(userListener);
+						
+						
+						dataFrame.pack();
+						dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						dataFrame.setVisible(true);
+						
+					    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+					    Rectangle r1 = dataFrame.getBounds();
+					    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+					
+					}
+						
+					private void deleteAddict(int deleteAID){
+						final JFrame dataFrame = new JFrame("Delete Addict");
+						JButton yButton = new JButton("Yes");
+						JButton nButton = new JButton("No");
+						JLabel titleLabel = new JLabel("Are you sure you want to remove: "+ deleteAID);
+					
+						JPanel contentPane = new JPanel();
+						dataFrame.setContentPane(contentPane);
+						
+						GridBagLayout gb = new GridBagLayout();
+						GridBagConstraints c = new GridBagConstraints();
+						
+						//title
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(titleLabel,c);
+						contentPane.add(titleLabel);
+						
+						// name Label
+						c.gridwidth = GridBagConstraints.RELATIVE;
+						c.insets = new Insets(10, 10, 5, 0);
+						gb.setConstraints(yButton, c);
+						contentPane.add(yButton);
+								
+						// name Field 
+						c.gridwidth = GridBagConstraints.REMAINDER;
+						c.insets = new Insets(10, 0, 5, 10);
+						c.weightx=1.;
+						c.fill = GridBagConstraints.NONE;
+						gb.setConstraints(nButton, c);
+						contentPane.add(nButton);
+						
+						
+						ActionListener yesListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e){	
+								try{
+									PreparedStatement st;						
+									String reQuery = "DELETE FROM addict WHERE AID = ?";
+									st = con.prepareStatement(reQuery);
+									st.setString(1,Integer.toString(deleteAID));
+									ResultSet rs = st.executeQuery();
+										
+									showAddicts();
+									dataFrame.dispose();								
+								}catch(SQLException e1){
+									System.out.println("Error: " + e1.getMessage());
+								}								
+							}
+						};
+						yButton.addActionListener(yesListener);
+						
+						ActionListener noListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								showAddicts();
+								dataFrame.dispose();
+							}
+						};
+						nButton.addActionListener(noListener);
+						
+						dataFrame.pack();
+						dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						dataFrame.setVisible(true);
+						
+					    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+					    Rectangle r1 = dataFrame.getBounds();
+					    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+					}
+				});
+				
+				JPanel bot = new JPanel(new FlowLayout());
+				JLabel rateLabel = new JLabel("Want to Update or Delete an Addict? Double Click the Addict's AID!");
+				
+				
+				bot.add(rateLabel);
+				dataFrame.add(bot,BorderLayout.SOUTH);
+				
 				dataFrame.pack();
 				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				dataFrame.setVisible(true);

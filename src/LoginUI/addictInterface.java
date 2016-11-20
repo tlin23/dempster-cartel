@@ -112,7 +112,7 @@ public class addictInterface{
 		contentPane.setLayout(layout);
 		contentPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		
-		String[] colNames = { "Name","Rating" };
+		String[] colNames = { "DID","Name","Rating" };
 		DefaultTableModel model = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int ColIndex) {
 				return false;
@@ -131,9 +131,10 @@ public class addictInterface{
 		try {
 			List<DealerData> dealerData = DataQueries.getDealers();
 			for (DealerData d : dealerData) {
-				Object[] o = new Object[2];
-				o[0] = d.name;
-				o[1] = d.rating;
+				Object[] o = new Object[3];
+				o[0] = d.DID;
+				o[1] = d.name;
+				o[2] = d.rating;
 				model.addRow(o);
 			}
 		}
@@ -152,16 +153,18 @@ public class addictInterface{
 					//System.out.println(row);
 					//System.out.println(column);
 					
-					String selectedName = (String) jt.getModel().getValueAt(row,0);
+					int selectedDID = (int) jt.getModel().getValueAt(row,0);
 					//System.out.println(selectedName);
 					
-					int selectedRating = (int) jt.getModel().getValueAt(row,1);
+					String selectedName = (String) jt.getModel().getValueAt(row, 1);
+					
+					int selectedRating = (int) jt.getModel().getValueAt(row,2);
 					//System.out.println(selectedName.toString());
 					
 					//System.out.println(selectedRating);
 					if(column == 0){
 						
-						rateAddict(selectedName,selectedRating);
+						rateAddict(selectedDID,selectedName, selectedRating);
 						dataFrame.dispose();
 						
 					}
@@ -170,7 +173,7 @@ public class addictInterface{
 		});
 		
 		JPanel bot = new JPanel(new FlowLayout());
-		JLabel rateLabel = new JLabel("Want to Rate a Dealer? Double Click the Dealer's Name!");
+		JLabel rateLabel = new JLabel("Want to Rate a Dealer? Double Click the Dealer's DID!");
 		
 		
 		bot.add(rateLabel);
@@ -186,7 +189,7 @@ public class addictInterface{
 	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
 	}
 	
-	private void rateAddict(final String name,int rating){
+	private void rateAddict(int DID,final String name, int rating){
 		final JTextField rateField;
 		final JFrame dataFrame = new JFrame("Rate Dealer");		
 		JLabel titleLabel = new JLabel("Rate This Dealer!");
@@ -250,27 +253,34 @@ public class addictInterface{
 			public void actionPerformed(ActionEvent e) {
 				
 				String rateSt = rateField.getText();
-				String checkQuery = "select rating from dealer where name = ?";
+				String checkQuery = "select rating from dealer where DID = ?";
 				
 				try{
 					PreparedStatement st = clientCon.prepareStatement(checkQuery);
-					st.setString(1, name);
+					st.setString(1,Integer.toString(DID));
 					ResultSet rs = st.executeQuery();
 					
 					if(rs.next()){
 						String oldRating = rs.getString("rating");
+						if(rs.wasNull()) oldRating = "";
 						System.out.println(oldRating);
 					
 					
-						int newRating = Integer.parseInt(rateSt) + Integer.parseInt(oldRating);
-						newRating = newRating / 2;
+						int newRating;
+						if (oldRating.equals("")){
+							newRating = Integer.parseInt(rateSt);
+						}else{
+							newRating = Integer.parseInt(rateSt) + Integer.parseInt(oldRating);
+							newRating = newRating / 2;
+						}
+						
 						System.out.println(newRating);
 						
 						
-						String reQuery = "UPDATE dealer SET rating = ? WHERE name = ?";
+						String reQuery = "UPDATE dealer SET rating = ? WHERE DID = ?";
 						st = clientCon.prepareStatement(reQuery);
 						st.setString(1, Integer.toString(newRating));
-						st.setString(2, name);
+						st.setString(2, Integer.toString(DID));
 						rs = st.executeQuery();
 						
 						showDealers();
@@ -337,7 +347,7 @@ public class addictInterface{
 			Login.showErrorConnecting(mainFrame);
 		}
 		
-		JPanel bot = new JPanel(new FlowLayout());
+		/*JPanel bot = new JPanel(new FlowLayout());
 		JButton addAddictButton = new JButton("Join the Community, Add Addict");
 		
 		addAddictButton.addActionListener(new ActionListener() {
@@ -347,7 +357,7 @@ public class addictInterface{
 			}
 		});
 		bot.add(addAddictButton);
-		dataFrame.add(bot,BorderLayout.SOUTH);
+		dataFrame.add(bot,BorderLayout.SOUTH);*/
 		
 		dataFrame.pack();
 		dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

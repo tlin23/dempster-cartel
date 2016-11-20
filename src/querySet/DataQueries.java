@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.Date;
 // SQLQueries added again
 
-import com.sun.xml.internal.ws.util.StringUtils;
+import com.sun.xml.*;
 
 public class DataQueries {
 
