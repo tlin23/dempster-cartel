@@ -144,6 +144,39 @@ public class DataQueries {
 			return getAddicts(rs);
 		}
 	}
+	
+	public static List<AddictData> findAddictsByName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Addict WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getAddicts(rs);
+		}
+	}
+	
+	public static List<AddictData> findAddictsByCashGreater(String cashGreater) throws SQLException {
+		if (cashGreater.equals("") || !cashGreater.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Addict WHERE Cash > " + cashGreater;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getAddicts(rs);
+		}
+	}
+	
+	public static List<AddictData> findAddictsByCashLesser(String cashLesser) throws SQLException {
+		if (cashLesser.equals("") || !cashLesser.matches("^-?\\d+$")) {
+			return new ArrayList<>();
+		}
+		String getDruglordStmnt = "SELECT * FROM Addict WHERE Cash < " + cashLesser;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getAddicts(rs);
+		}
+	}
+
+	
 	//Helper Methods 
 	private static List<AddictData> getAddicts(ResultSet results) throws SQLException{
 		List<AddictData> l = new ArrayList<>();
@@ -329,6 +362,11 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+	
+	
+	
+	
+	
 	
 
 }
