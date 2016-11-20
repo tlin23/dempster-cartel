@@ -77,7 +77,6 @@ public class findSupplierInterface {
 		gb.setConstraints(exitButton, c);
 		contentPane.add(exitButton);
 		
-		
 		searchByNameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String name = nameField.getText();

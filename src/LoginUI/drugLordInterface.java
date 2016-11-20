@@ -105,6 +105,13 @@ public class drugLordInterface {
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				//new druglordAddInterface(con); TODO
+				//mainFrame.dispose();
+			}
+		});
+		
+		makeTransButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new druglordTransInterface(con);
 				mainFrame.dispose();
 			}
 		});
@@ -115,6 +122,7 @@ public class drugLordInterface {
 				mainFrame.dispose();
 			}
 		});
+		
 		mainFrame.setMinimumSize(new Dimension(400, 200));
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Resize window

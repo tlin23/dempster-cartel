@@ -28,6 +28,16 @@ public class DataQueries {
 		}
 	}
 	
+	public static List<DrugLordData> findDruglordsByExactUsername(String name) throws SQLException {
+		String searchName = "'" + name.toUpperCase() + "'";
+		String getDruglordStmnt = "SELECT * FROM Druglord WHERE UPPER(dlusername) Like " + searchName;
+		System.out.println(getDruglordStmnt);
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getDruglords(rs);
+		}
+	}
+	
 	public static List<DrugLordData> findDruglordsByCashGreater(String cashGreater) throws SQLException {
 		if (cashGreater.equals("") || !cashGreater.matches("^-?\\d+$")) {
 			return new ArrayList<>();
@@ -171,6 +181,15 @@ public class DataQueries {
 	
 	public static List<SupplierData> findSuppliersByName(String name) throws SQLException {
 		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Supplier WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getSuppliers(rs);
+		}
+	}
+	
+	public static List<SupplierData> findSuppliersByExactName(String name) throws SQLException {
+		String searchName = "'" + name.toUpperCase() + "'";
 		String getDruglordStmnt = "SELECT * FROM Supplier WHERE UPPER(name) Like " + searchName;
 		try(Statement st = con.createStatement()){
 			ResultSet rs = st.executeQuery(getDruglordStmnt);
@@ -353,9 +372,7 @@ public class DataQueries {
 		}
 		return l;
 	}
-	
-	
-	
+
 	public static List<DealerData> getSummaryDealers() throws SQLException{
 		String getSummaryDealersStmnt = "Select d.Name, SUM(t.Cash) as TotalSales, SUM(t.Cocaine) as TotalCocaine "
 										 + "FROM Dealer d, DistTrans t "
@@ -411,6 +428,25 @@ public class DataQueries {
 	
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
+	}
+
+	public static boolean makeSupplyTrans(String sid, String dlid,String cashAmount, String cocaineAmount) throws SQLException {
+		String makeSupplyTransStmnt = "INSERT INTO SupplyTrans(STID, Cash, Cocaine, TransDate, SID, DLID) VALUES(0," + cashAmount + "," + cocaineAmount + ", CURRENT_TIMESTAMP," + sid + "," + dlid +")";
+		try(Statement st = con.createStatement()){
+			st.executeQuery(makeSupplyTransStmnt);
+		}
+		
+		String druglordGiveCocaineStmnt = "UPDATE DrugLord SET Cocaine = Cocaine + " + cocaineAmount  + " WHERE DLID = " + dlid;
+		try(Statement st = con.createStatement()){
+			st.executeQuery(druglordGiveCocaineStmnt);
+		}
+		
+		String druglordTakeMoneyStmnt = "UPDATE DrugLord SET Cash = Cash - " + cashAmount  + " WHERE DLID = " + dlid;
+		try(Statement st = con.createStatement()){
+			st.executeQuery(druglordTakeMoneyStmnt);
+		}
+		
+		return true;
 	}
 
 	
