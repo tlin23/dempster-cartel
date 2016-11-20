@@ -116,6 +116,15 @@ public class DataQueries {
 			return getSuppliers(rs);
 		}
 	}
+	
+	public static List<SupplierData> findSuppliersByName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Supplier WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getSuppliers(rs);
+		}
+	}
 
 	private static List<SupplierData> getSuppliers(ResultSet results) throws SQLException {
 		List<SupplierData> l = new ArrayList<>();
@@ -320,5 +329,6 @@ public class DataQueries {
 	private static String dateToStr(java.sql.Date date){
 		return "to_date('" + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() - 100) + "',' DD-MM-YY')";
 	}
+	
 
 }

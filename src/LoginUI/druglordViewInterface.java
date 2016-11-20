@@ -44,6 +44,7 @@ public class druglordViewInterface {
 		JButton viewDealerMostCash = new JButton("View Dealer with Most Owed Cash");
 		JButton viewTotalCashDealers = new JButton("View Total Money To Collect From Dealers (and their Addicts)");
 		JButton findDealer = new JButton("Find a Dealer");
+		JButton findSupplier = new JButton("Find a Supplier");
 		JLabel addictView = new JLabel ("Druglord View Menu");
 		
 		// Title
@@ -61,6 +62,14 @@ public class druglordViewInterface {
 		gb.setConstraints(findDealer, c);
 		contentPane.add(findDealer);
 		
+		//Find Supplier button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(findSupplier, c);
+		contentPane.add(findSupplier);
 		
 		//view Supply button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -570,8 +579,7 @@ public class druglordViewInterface {
 			    //other default window features
 			}
 		});
-		
-		
+				
 		viewTotalCashDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showTotalCashDealers();
@@ -628,8 +636,7 @@ public class druglordViewInterface {
 			}			
 
 		});
-		
-		
+	
 		viewDealerMostCash.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showDealerMostCash();
@@ -687,8 +694,7 @@ public class druglordViewInterface {
 			}			
 
 		});
-		
-		
+				
 		viewSummaryDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				showSummaryDealers();
@@ -750,6 +756,13 @@ public class druglordViewInterface {
 		findDealer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				new findDealerInterface(con);
+				mainFrame.dispose();
+			}
+		});
+		
+		findSupplier.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new findSupplierInterface(con);
 				mainFrame.dispose();
 			}
 		});
