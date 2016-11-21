@@ -293,7 +293,7 @@ WHERE t.DID = d.DID and t.DID != ALL (Select DID FROM DistTrans WHERE AID = “ 
 
 
 
-// ====== Division: Method 2 (D) ======
+// ====== Division: Method 2 (D) ====== 
 // Helper: all DID who have made Deals not involving Addict AID
 (SELECT DID FROM DistTrans)
 MINUS
@@ -304,7 +304,66 @@ MINUS
 
 
 
+// ======== Division 2 ===========
+// find all Dealers that have dealt in >1 territory
+
+// find all DID in territories
+select distinct DID
+from distTrans;
+
+// find all DID that have dealt in only 1 territory
+select distinct t1.DID
+from distTrans t1, distTrans t2
+where t1.DID = t2.DID and t1.TID != t2.TID
+
+// Actual Function: find all Dealers that have dealt in >1 territory
+select distinct te.Name as TerritoryName, d.name
+from distTrans t, dealer d, territory te
+where t.DID = d.DID and t.TID = te.TID and d.DID != ALL ((select distinct DID from distTrans)
+		   minus
+		   (select distinct t1.DID from distTrans t1, distTrans t2 where t1.DID = t2.DID and t1.TID != t2.TID))
+
+
 // ====== Aggregation (D, DL) ======
+
+
+// ======== Aggregation 00 ===========
+// Find top Dealer sale: i.e. best unit sale
+select d.name, (t.cash/t.cocaine) as UnitPrice
+From distTrans t, dealer d
+Where t.DID = d.DID and (t.cash/t.cocaine) = (select MAX(cash/cocaine) as UnitPrice
+from distTrans);
+
+// ======== Aggregation 0 ===========
+
+// Find unit price of supplyTrans ($/cocaine)
+select (cash/cocaine) as UnitPrice
+from SupplyTrans
+
+
+// Unit price of supply Trans > avg(unit price)
+select (cash/cocaine) as UnitPrice
+from SupplyTrans
+where (cash/cocaine) > (select AVG(cash/cocaine) as UnitPrice
+from SupplyTrans)
+
+
+select SID, DLID, (cash/cocaine) as UnitPrice
+from SupplyTrans
+where (cash/cocaine) = (select MAX(cash/cocaine) as UnitPrice
+from SupplyTrans);
+
+
+
+// Find all drug lord dealt with suspect SID =2
+select s.name as SupplyName, d.Name as DLName, (t.cash/t.cocaine) as UnitPrice
+from supplyTrans t, drugLord d, Supplier s
+where t.SID = s.SID and t.DLID = d.DLID and t.SID = (select SID
+from SupplyTrans
+where (cash/cocaine) = (select MAX(cash/cocaine) as UnitPrice
+from SupplyTrans))
+ORDER BY UnitPrice DESC;
+
 
 // ==== Aggregation 1 ===
 // Find total money owed by all Addicts
@@ -394,8 +453,16 @@ Where DLID = “ + DLID
 // Drug Lord: view total cash each dealer owes a Drug Lord DLID=1
 Select d.NAME, (SUM(a.Cash) + d.Cash) as TotalCash
 From DistTrans t, Addict a, Dealer d
-Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = 1) 
+Where t.AID = a.AID and t.DID = d.DID and t.DID IN 
+
+(SELECT d.DID
+FROM d.Dealer, l.DrugLord
+WHERE d.DLID = l.DLID AND l.Name = “ + Name + “)”
+
 GROUP BY d.NAME, d.Cash
+Order by d.Cash DESC;
+
+// !!!! ADD ORDER BY!!!!
 
 
 // Java shit
@@ -403,5 +470,5 @@ GROUP BY d.NAME, d.Cash
 From DistTrans t, Addict a, Dealer d
 Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = “ + DLID + “) 
 GROUP BY d.NAME, d.Cash
-
+Order by d.Cash DESC
 

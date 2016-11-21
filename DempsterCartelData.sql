@@ -21,7 +21,7 @@ DROP SEQUENCE dtrans_seq;
 
 CREATE TABLE AddictUser(
 	aUserName varchar(25) Primary Key,
-	password varchar(25),	
+	password varchar(25),
 	check (REGEXP_LIKE(aUserName,'^[a-zA-Z][a-zA-Z0-9.,$;]*$'))
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE Addict(
 	AID int NOT NULL,
 	Cash decimal(19,4) DEFAULT 0 NOT NULL,
 	Name VARCHAR(55),
-	aUserName varchar(25) not null,	
+	aUserName varchar(25) not null,
 	PRIMARY KEY (AID),
 	FOREIGN KEY(aUserName) references AddictUser ON DELETE CASCADE,
 	check (Cash > = 0),
@@ -139,7 +139,7 @@ CREATE SEQUENCE dtrans_seq START WITH 1;
 CREATE OR REPLACE TRIGGER a_bir
 	BEFORE INSERT ON Addict
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT a_seq.NEXTVAL
 		INTO :new.AID
 		FROM dual;
@@ -149,7 +149,7 @@ CREATE OR REPLACE TRIGGER a_bir
 CREATE OR REPLACE TRIGGER dl_bir
 	BEFORE INSERT ON DrugLord
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT dl_seq.NEXTVAL
 		INTO :new.DLID
 		FROM dual;
@@ -159,7 +159,7 @@ CREATE OR REPLACE TRIGGER dl_bir
 CREATE OR REPLACE TRIGGER d_bir
 	BEFORE INSERT ON Dealer
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT d_seq.NEXTVAL
 		INTO :new.DID
 		FROM dual;
@@ -169,7 +169,7 @@ CREATE OR REPLACE TRIGGER d_bir
 CREATE OR REPLACE TRIGGER t_bir
 	BEFORE INSERT ON Territory
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT t_seq.NEXTVAL
 		INTO :new.TID
 		FROM dual;
@@ -179,7 +179,7 @@ CREATE OR REPLACE TRIGGER t_bir
 CREATE OR REPLACE TRIGGER s_bir
 	BEFORE INSERT ON Supplier
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT s_seq.NEXTVAL
 		INTO :new.SID
 		FROM dual;
@@ -189,7 +189,7 @@ CREATE OR REPLACE TRIGGER s_bir
 CREATE OR REPLACE TRIGGER strans_bir
 	BEFORE INSERT ON SupplyTrans
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT strans_seq.NEXTVAL
 		INTO :new.STID
 		FROM dual;
@@ -199,7 +199,7 @@ CREATE OR REPLACE TRIGGER strans_bir
 CREATE OR REPLACE TRIGGER dtrans_bir
 	BEFORE INSERT ON DistTrans
 	FOR EACH ROW
-	BEGIN 
+	BEGIN
 		SELECT dtrans_seq.NEXTVAL
 		INTO :new.DTID
 		FROM dual;
@@ -231,11 +231,11 @@ INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 556, 'Jeff','my');
 INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 220, 'Bob','square');
 INSERT INTO Addict (AID, Cash, Name,aUserName) VALUES (0, 10, 'Patrick','star');
 
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
 VALUES (0,100000,1000,'Pablo Escobar',NULL,'drug');
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
 VALUES (1, 80000, 600, 'Gonzalo Gacha',NULL,'bar');
-INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName) 
+INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
 VALUES (2, 500,100, 'El Limon',NULL,'pass');
 INSERT INTO DrugLord (DLID, Cash, Cocaine, Name, WLID, dlUserName)
 VALUES (3, 20000, 500, 'Juan David Ochoa',NULL,'white');
@@ -265,11 +265,11 @@ VALUES(0, 100, 10,'El Negro',
 	(SELECT dl.dlid
 		FROM DrugLord dl
 		WHERE dl.name = 'Pablo Escobar'),5,'dealer');
-		
+
 INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES(1, 222, 50, 'Jesse Pinkman',
-	(SELECT dl.dlid 
-		FROM DrugLord dl 
+	(SELECT dl.dlid
+		FROM DrugLord dl
 		WHERE dl.name = 'El Loco'),3,'foo');
 INSERT INTO Dealer (DID, Cash, Cocaine, Name, DLID, Rating, dUserName)
 VALUES( 2, 68, 19, 'Bruno Vasquez',
@@ -303,7 +303,7 @@ VALUES (0,10,1,CURRENT_TIMESTAMP,
 		WHERE a.name = 'Pena')
 );
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
-VALUES(0, 20000, 55, CURRENT_TIMESTAMP, 
+VALUES(0, 20000, 55, CURRENT_TIMESTAMP,
 	(SELECT d.DID
 		FROM Dealer d
 		Where d.name = 'Jesse Pinkman'),
@@ -320,7 +320,7 @@ VALUES(0, 20000, 55, CURRENT_TIMESTAMP,
 INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
 VALUES(0, 1000000, 150, CURRENT_TIMESTAMP,
 	(SELECT d.DID
-		FROM Dealer d 
+		FROM Dealer d
 		WHERE d.name = 'El Negro'),
 	(SELECT dl.DLID
 		FROM DrugLord dl
@@ -360,8 +360,24 @@ VALUES ( 0, 9000, 30, CURRENT_TIMESTAMP,
 		FROM Territory t
 		WHERE t.name = 'Miami'),
 	(SELECT a.AID
-		FROM Addict a 
+		FROM Addict a
 		WHERE a.name = 'Jeff')
+);
+
+INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)
+VALUES ( 0, 500, 5, CURRENT_TIMESTAMP,
+	(SELECT d.DID
+		FROM Dealer d
+		WHERE d.name = 'El Negro'),
+	(SELECT dl.DLID
+		FROM DrugLord dl
+		Where dl.name = 'Pablo Escobar'),
+	(SELECT t.TID
+		FROM Territory t
+		WHERE t.name = 'Cali'),
+	(SELECT a.AID
+		FROM Addict a
+		WHERE a.name = 'Xavier')
 );
 
 INSERT INTO SupplyTrans(STID, Cash, Cocaine, TransDate, SID, DLID)
@@ -409,7 +425,3 @@ VALUES(4, 10400, 140, CURRENT_TIMESTAMP,
 		FROM DrugLord dl
 		WHERE dl.name = 'El Limon')
 );
-
-
-
-	

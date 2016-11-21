@@ -11,6 +11,33 @@ public class DataQueries {
 
 	public static Connection con;
 	
+	
+	public static List<DealerData> getSketchyDealers() throws SQLException{ 
+		String getSketchyDealersStmnt = "select distinct te.Name as TerritoryName, d.name as DealerName "
+										+ "from distTrans t, dealer d, territory te "
+										+ "where t.DID = d.DID and t.TID = te.TID and d.DID != ALL "
+												+ "((select distinct DID from distTrans) "
+												+ "minus "
+												+ "(select distinct t1.DID from distTrans t1, distTrans t2 where t1.DID = t2.DID and t1.TID != t2.TID))";
+		
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getSketchyDealersStmnt);
+			return getSketchyDealers(rs);
+		}
+	}
+	// Helper for getSketchyDealers
+	private static List<DealerData> getSketchyDealers(ResultSet results) throws SQLException{
+		List<DealerData> l = new ArrayList<>();
+		while(results.next()){
+			DealerData d = new DealerData();
+			d.name = results.getString("TerritoryName");
+			d.dUserName = results.getString("DealerName");
+			l.add(d);
+		}
+		return l;
+	}
+	
+	
 	public static List<DrugLordData> getDruglords() throws SQLException{
 		String getDruglordStmnt = "select * from druglord";
 		try(Statement st = con.createStatement()){
