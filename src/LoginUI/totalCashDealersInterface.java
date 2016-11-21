@@ -151,59 +151,12 @@ public class totalCashDealersInterface {
 		});
 		
 		
-		
-		
-		
-		
-//		private void showTotalCashDealers(){
-//			JFrame dataFrame = new JFrame("View Total Money To Collect From Dealers (and their Addicts)");
-//			JPanel contentPane = new JPanel();
-//			dataFrame.setContentPane(contentPane);
-//			
-//			BorderLayout layout = new BorderLayout();
-//			contentPane.setLayout(layout);
-//			contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-//			
-//			String[] colNames = { "Name", "Total Cash To Collect"};
-//			DefaultTableModel model = new DefaultTableModel() {
-//				public boolean isCellEditable(int rowIndex, int ColIndex) {
-//					return false;
-//				}
-//			};
-//			
-//			JTable jt = new JTable();
-//			jt.setModel(model);
-//			model.setColumnIdentifiers(colNames);
-//			jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-//			jt.setRowHeight(50);
-//			jt.setMinimumSize(new Dimension(200,50));
-//			dataFrame.setMinimumSize(new Dimension(300, 100));
-//			contentPane.add(new JScrollPane(jt));
-//			
-//			try {
-//				List<DealerData> dealerData = DataQueries.getTotalCashDealers();
-//				for (DealerData d : dealerData) {
-//					Object[] o = new Object[2];
-//					o[0] = d.name;
-//					o[1] = d.cash;
-//					model.addRow(o);
-//				}
-//			}
-//			catch (SQLException ex) {
-//				System.out.println(ex.getMessage());
-//				Login.showErrorConnecting(mainFrame);
-//			}
-//			
-//			dataFrame.pack();
-//			dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//			dataFrame.setVisible(true);
-//			
-//		    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-//		    Rectangle r1 = dataFrame.getBounds();
-//		    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-//		    
-//		    //other default window features
-//		}		
+		exitButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new druglordViewInterface(con);
+				mainFrame.dispose();
+			}
+		});
 		
 		mainFrame.setMinimumSize(new Dimension(400, 200));
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
