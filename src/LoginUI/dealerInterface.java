@@ -16,7 +16,7 @@ public class dealerInterface {
 	private Connection clientcon;
 	private String user;
 	
-	public dealerInterface(Connection con){
+	public dealerInterface(final Connection con){
 		System.out.println("\nLogged in as Dealer");
 		clientcon = con;
 		this.user = user;
@@ -117,7 +117,7 @@ public class dealerInterface {
 			}
 			
 			private void showAddicts(){
-				JFrame dataFrame = new JFrame("View All Addicts");
+				final JFrame dataFrame = new JFrame("View All Addicts");
 				JPanel contentPane = new JPanel();
 				dataFrame.setContentPane(contentPane);
 				
@@ -132,7 +132,7 @@ public class dealerInterface {
 					}
 				};
 				
-				JTable jt = new JTable();
+				final JTable jt = new JTable();
 				jt.setModel(model);
 				model.setColumnIdentifiers(colNames);
 				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -176,7 +176,7 @@ public class dealerInterface {
 						}
 					}
 					
-					private void editAddict(int selectedAID) {
+					private void editAddict(final int selectedAID) {
 						final JFrame dataFrame = new JFrame("Edit Addict");
 						JButton uButton = new JButton("Update");
 						JButton dButton = new JButton("Delete");
@@ -238,7 +238,7 @@ public class dealerInterface {
 						
 					}
 						
-					private void updateAddict(int updateAID){
+					private void updateAddict(final int updateAID){
 						final JTextField  nameField;
 						final JTextField cashField;
 						final JFrame dataFrame = new JFrame("Update Addict");		
@@ -349,7 +349,7 @@ public class dealerInterface {
 					
 					}
 						
-					private void deleteAddict(int deleteAID){
+					private void deleteAddict(final int deleteAID){
 						final JFrame dataFrame = new JFrame("Delete Addict");
 						JButton yButton = new JButton("Yes");
 						JButton nButton = new JButton("No");
