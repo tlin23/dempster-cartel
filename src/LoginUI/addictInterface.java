@@ -189,7 +189,7 @@ public class addictInterface{
 	    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
 	}
 	
-	private void rateAddict(int DID,final String name, int rating){
+	private void rateAddict(final int DID,final String name, int rating){
 		final JTextField rateField;
 		final JFrame dataFrame = new JFrame("Rate Dealer");		
 		JLabel titleLabel = new JLabel("Rate This Dealer!");
