@@ -223,6 +223,15 @@ public class DataQueries {
 			return getSuppliers(rs);
 		}
 	}
+	
+	public static List<DealerData> findDealersByExactName(String name) throws SQLException {
+		String searchName = "'" + name.toUpperCase() + "'";
+		String getDealerStmnt = "SELECT * FROM Dealer WHERE UPPER(dUserName) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDealerStmnt);
+			return getDealers(rs);
+		}
+	}
 
 	private static List<SupplierData> getSuppliers(ResultSet results) throws SQLException {
 		List<SupplierData> l = new ArrayList<>();
@@ -246,6 +255,15 @@ public class DataQueries {
 	public static List<AddictData> findAddictsByName(String name) throws SQLException {
 		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
 		String getDruglordStmnt = "SELECT * FROM Addict WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDruglordStmnt);
+			return getAddicts(rs);
+		}
+	}
+	
+	public static List<AddictData> findAddictsByExactName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getDruglordStmnt = "SELECT * FROM Addict WHERE UPPER(aUserName) Like " + searchName;
 		try(Statement st = con.createStatement()){
 			ResultSet rs = st.executeQuery(getDruglordStmnt);
 			return getAddicts(rs);
@@ -303,6 +321,15 @@ public class DataQueries {
 			l.add(d);
 		}
 		return l;
+	}
+	
+	public static List<TerritoryData> findTerritoriesByName(String name) throws SQLException {
+		String searchName = name.equals("") ? "'" + name.toUpperCase() + "'" : "'%" + name.toUpperCase() + "%'";
+		String getTerritoryStmnt = "SELECT * FROM Territory WHERE UPPER(name) Like " + searchName;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getTerritoryStmnt);
+			return getTerritories(rs);
+		}
 	}
 	
 	public static List<DistTransData> getDistTrans() throws SQLException {
@@ -480,7 +507,25 @@ public class DataQueries {
 		return true;
 	}
 
-	
+	public static boolean makeDistTrans(String did, String dlid, String tid, String aid, String cashAmount, String cocaineAmount) throws SQLException {
+		String makeDistTransStmnt = "INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)"
+									+ " VALUES(0," + cashAmount + "," + cocaineAmount + ", CURRENT_TIMESTAMP," + did + "," + dlid + "," + tid + "," + aid + ")";
+		try(Statement st = con.createStatement()){
+			st.executeQuery(makeDistTransStmnt);
+		}
+		
+		String dealerGiveCocaineStmnt = "UPDATE Dealer SET Cocaine = Cocaine - " + cocaineAmount  + " WHERE DID = " + did;
+		try(Statement st = con.createStatement()){
+			st.executeQuery(dealerGiveCocaineStmnt);
+		}
+		
+		String dealerTakeMoneyStmnt = "UPDATE Dealer SET Cash = Cash + " + cashAmount  + " WHERE DID = " + did;
+		try(Statement st = con.createStatement()){
+			st.executeQuery(dealerTakeMoneyStmnt);
+		}
+		
+		return true;
+	}
 
 	
 

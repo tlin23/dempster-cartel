@@ -38,6 +38,7 @@ public class dealerInterface {
 		JButton viewTerritories = new JButton("View All Territories");
 		JButton viewDistTrans = new JButton("View All Distribution Transactions");
 		JButton viewAddictDebt = new JButton("View Total Addict Debt");
+		JButton makeDistTrans = new JButton("Make Distribution Transaction");
 		JLabel addictView = new JLabel ("Dealer View Menu");
 		
 		// Title
@@ -100,6 +101,15 @@ public class dealerInterface {
 		c.anchor = GridBagConstraints.CENTER;
 		gb.setConstraints(viewAddictDebt, c);   	
 		contentPane.add(viewAddictDebt);	
+		
+		//view DistTrans button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(makeDistTrans, c);
+		contentPane.add(makeDistTrans);
 		
 		//Logout button
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -726,6 +736,14 @@ public class dealerInterface {
 			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
 			    
 			    //other default window features
+			}
+		});
+		
+		makeDistTrans.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+//				showTotalCashDealers();
+				new makeDistTransInterface(con);
+				mainFrame.dispose(); //not yet
 			}
 		});
 		

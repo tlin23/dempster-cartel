@@ -54,10 +54,7 @@ public class druglordViewInterface {
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 10, 5, 0);
 		gb.setConstraints(addictView,c);
-		contentPane.add(addictView);
-		
-		
-		
+		contentPane.add(addictView);		
 		
 		//Find Druglord button
 		c.gridwidth = GridBagConstraints.REMAINDER;
