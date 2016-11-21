@@ -354,11 +354,15 @@ public class DataQueries {
 	}
 	
 
-	public static List<DealerData> getTotalCashDealers() throws SQLException{
+	public static List<DealerData> getTotalCashDealers(String name) throws SQLException{
 		String getTotalCashDealersStmnt = "Select d.NAME, (SUM(a.Cash) + d.Cash) as TotalCash "
 										  + "From DistTrans t, Addict a, Dealer d "
-										  + "Where t.AID = a.AID and t.DID = d.DID and t.DID IN (SELECT DID FROM Dealer WHERE DLID = 1) "
-										  + "GROUP BY d.NAME, d.Cash";
+										  + "Where t.AID = a.AID and t.DID = d.DID and t.DID IN "
+										  + "(SELECT d.DID FROM Dealer d, DrugLord l "
+										  + "WHERE d.DLID = l.DLID AND UPPER(l.Name) LIKE '%"
+										  + name.toUpperCase() + "%') "
+										  + "GROUP BY d.NAME, d.Cash "
+										  + "Order by d.Cash DESC";
 		try(Statement st = con.createStatement()){
 			ResultSet rs = st.executeQuery(getTotalCashDealersStmnt);
 			return getTotalCashDealers(rs);

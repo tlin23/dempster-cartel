@@ -56,73 +56,7 @@ public class druglordViewInterface {
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
 		
-		// Copy In ======
-		//Find sketchy dealer(s) button
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(5, 10, 10, 10);
-		c.weightx= 0;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.CENTER;
-		gb.setConstraints(findSketchyDealers, c);
-		contentPane.add(findSketchyDealers);
-
-		findSketchyDealers.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				showSketchyDealers();
-				//mainFrame.dispose(); //not yet
-			}
-			private void showSketchyDealers(){
-				JFrame dataFrame = new JFrame("Find Sketchy Dealer(s)");
-				JPanel contentPane = new JPanel();
-				dataFrame.setContentPane(contentPane);
-
-				BorderLayout layout = new BorderLayout();
-				contentPane.setLayout(layout);
-				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-
-				String[] colNames = { "Territory Name", "Dealer Name" };
-				DefaultTableModel model = new DefaultTableModel() {
-					public boolean isCellEditable(int rowIndex, int ColIndex) {
-						return false;
-					}
-				};
-
-				JTable jt = new JTable();
-				jt.setModel(model);
-				model.setColumnIdentifiers(colNames);
-				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-				jt.setRowHeight(50);
-				jt.setMinimumSize(new Dimension(200,50));
-				dataFrame.setMinimumSize(new Dimension(300, 100));
-				contentPane.add(new JScrollPane(jt));
-
-				try {
-					List<DealerData> dealerData = DataQueries.getSketchyDealers();
-					for (DealerData d : dealerData) {
-						Object[] o = new Object[2];
-						o[0] = d.name;
-						o[1] = d.dUserName;
-						model.addRow(o);
-					}
-				}
-				catch (SQLException ex) {
-					System.out.println(ex.getMessage());
-					Login.showErrorConnecting(mainFrame);
-				}
-
-				dataFrame.pack();
-				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				dataFrame.setVisible(true);
-
-			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-			    Rectangle r1 = dataFrame.getBounds();
-			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-
-			    //other default window features
-			}
-
-		});
-		// Copy in ======
+		
 		
 		
 		//Find Druglord button
@@ -251,6 +185,15 @@ public class druglordViewInterface {
 		gb.setConstraints(viewSummaryDealers, c);
 		contentPane.add(viewSummaryDealers);
 
+		//Find sketchy dealer(s) button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(findSketchyDealers, c);
+		contentPane.add(findSketchyDealers);
+		
 		//Logout button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
@@ -672,59 +615,10 @@ public class druglordViewInterface {
 				
 		viewTotalCashDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				showTotalCashDealers();
-				//mainFrame.dispose(); //not yet
+//				showTotalCashDealers();
+				new totalCashDealersInterface(con);
+				mainFrame.dispose(); //not yet
 			}
-			private void showTotalCashDealers(){
-				JFrame dataFrame = new JFrame("View Total Money To Collect From Dealers (and their Addicts)");
-				JPanel contentPane = new JPanel();
-				dataFrame.setContentPane(contentPane);
-				
-				BorderLayout layout = new BorderLayout();
-				contentPane.setLayout(layout);
-				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-				
-				String[] colNames = { "Name", "Total Cash To Collect"};
-				DefaultTableModel model = new DefaultTableModel() {
-					public boolean isCellEditable(int rowIndex, int ColIndex) {
-						return false;
-					}
-				};
-				
-				JTable jt = new JTable();
-				jt.setModel(model);
-				model.setColumnIdentifiers(colNames);
-				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-				jt.setRowHeight(50);
-				jt.setMinimumSize(new Dimension(200,50));
-				dataFrame.setMinimumSize(new Dimension(300, 100));
-				contentPane.add(new JScrollPane(jt));
-				
-				try {
-					List<DealerData> dealerData = DataQueries.getTotalCashDealers();
-					for (DealerData d : dealerData) {
-						Object[] o = new Object[2];
-						o[0] = d.name;
-						o[1] = d.cash;
-						model.addRow(o);
-					}
-				}
-				catch (SQLException ex) {
-					System.out.println(ex.getMessage());
-					Login.showErrorConnecting(mainFrame);
-				}
-				
-				dataFrame.pack();
-				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				dataFrame.setVisible(true);
-				
-			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
-			    Rectangle r1 = dataFrame.getBounds();
-			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
-			    
-			    //other default window features
-			}			
-
 		});
 	
 		viewDealerMostCash.addActionListener(new ActionListener(){
@@ -840,6 +734,64 @@ public class druglordViewInterface {
 			    
 			    //other default window features
 			}			
+
+		});
+		
+
+		findSketchyDealers.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				showSketchyDealers();
+				//mainFrame.dispose(); //not yet
+			}
+			private void showSketchyDealers(){
+				JFrame dataFrame = new JFrame("Find Sketchy Dealer(s)");
+				JPanel contentPane = new JPanel();
+				dataFrame.setContentPane(contentPane);
+
+				BorderLayout layout = new BorderLayout();
+				contentPane.setLayout(layout);
+				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
+				String[] colNames = { "Territory Name", "Dealer Name" };
+				DefaultTableModel model = new DefaultTableModel() {
+					public boolean isCellEditable(int rowIndex, int ColIndex) {
+						return false;
+					}
+				};
+
+				JTable jt = new JTable();
+				jt.setModel(model);
+				model.setColumnIdentifiers(colNames);
+				jt.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				jt.setRowHeight(50);
+				jt.setMinimumSize(new Dimension(200,50));
+				dataFrame.setMinimumSize(new Dimension(300, 100));
+				contentPane.add(new JScrollPane(jt));
+
+				try {
+					List<DealerData> dealerData = DataQueries.getSketchyDealers();
+					for (DealerData d : dealerData) {
+						Object[] o = new Object[2];
+						o[0] = d.name;
+						o[1] = d.dUserName;
+						model.addRow(o);
+					}
+				}
+				catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+					Login.showErrorConnecting(mainFrame);
+				}
+
+				dataFrame.pack();
+				dataFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				dataFrame.setVisible(true);
+
+			    Dimension d1 = dataFrame.getToolkit().getScreenSize();
+			    Rectangle r1 = dataFrame.getBounds();
+			    dataFrame.setLocation((d1.width - r1.width)/2, (d1.height - r1.height)/2);
+
+			    //other default window features
+			}
 
 		});
 		
