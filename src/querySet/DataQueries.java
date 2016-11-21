@@ -507,9 +507,11 @@ public class DataQueries {
 		return true;
 	}
 
-	public static boolean makeDistTrans(String did, String dlid, String tid, String aid, String cashAmount, String cocaineAmount) throws SQLException {
-		String makeDistTransStmnt = "INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID)"
-									+ " VALUES(0," + cashAmount + "," + cocaineAmount + ", CURRENT_TIMESTAMP," + did + "," + dlid + "," + tid + "," + aid + ")";
+	public static boolean makeDistTrans(String did, String tid, String aid, String cashAmount, String cocaineAmount, Integer payment) throws SQLException {
+		String makeDistTransStmnt = "INSERT INTO DistTrans(DTID, Cash, Cocaine, TransDate, DID, DLID, TID, AID) "
+								  + "VALUES(0," + cashAmount + "," + cocaineAmount + ", CURRENT_TIMESTAMP," + did + "," 
+								  + "(Select DLID from Dealer where DID = " + did
+								  + ")," + tid + "," + aid + ")";
 		try(Statement st = con.createStatement()){
 			st.executeQuery(makeDistTransStmnt);
 		}
@@ -519,11 +521,32 @@ public class DataQueries {
 			st.executeQuery(dealerGiveCocaineStmnt);
 		}
 		
-		String dealerTakeMoneyStmnt = "UPDATE Dealer SET Cash = Cash + " + cashAmount  + " WHERE DID = " + did;
-		try(Statement st = con.createStatement()){
-			st.executeQuery(dealerTakeMoneyStmnt);
+		int cost = Integer.parseInt(cashAmount);
+		// Case 1: addict pays ALL up front to dealer
+		if (payment == cost){
+			String dealerTakeMoneyStmnt = "UPDATE Dealer SET Cash = Cash + " + cashAmount  + " WHERE DID = " + did;
+			try(Statement st = con.createStatement()){
+				st.executeQuery(dealerTakeMoneyStmnt);
+			}
 		}
-		
+		// Case 2: addict puts on tab
+		// Case 2a: addict puts all on tab
+		else if (payment == 0){
+			String addictPutMoneyTabStmnt = "UPDATE Addict SET Cash = Cash + " + cashAmount  + " WHERE AID = " + aid;
+			try(Statement st = con.createStatement()){
+				st.executeQuery(addictPutMoneyTabStmnt);
+			}
+		}
+		// Case 2b: addicts puts portion on tab (cost - payment), pay portion to dealer (payment)
+		else{
+			String tab = Integer.toString(cost - payment);
+			String addictPutMoneyTabStmnt = "UPDATE Addict SET Cash = Cash + " + tab  + " WHERE AID = " + aid;
+			String dealerTakeMoneyStmnt = "UPDATE Dealer SET Cash = Cash + " + payment  + " WHERE DID = " + did;
+			try(Statement st = con.createStatement()){
+				st.executeQuery(addictPutMoneyTabStmnt);
+				st.executeQuery(dealerTakeMoneyStmnt);
+			}
+		}
 		return true;
 	}
 

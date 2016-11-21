@@ -22,19 +22,15 @@ import javax.swing.JTextField;
 import querySet.AddictData;
 import querySet.DataQueries;
 import querySet.DealerData;
-import querySet.DrugLordData;
-import querySet.SupplierData;
 import querySet.TerritoryData;
 
 public class makeDistTransInterface {
 	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
-	private String user;
 	
 	public makeDistTransInterface(final Connection con){
 		clientcon = con;
-		this.user = user;
 		
 		mainFrame = new JFrame("Dealer Make Distribution Transaction View");
 		JPanel contentPane = new JPanel();
@@ -50,11 +46,11 @@ public class makeDistTransInterface {
 		JButton executeButton = new JButton("Execute");
 		JLabel addictView = new JLabel ("Distribution Transaction");
 		final JTextField dealerField = new JTextField(10);
-		final JTextField druglordField = new JTextField(10);
 		final JTextField territoryField = new JTextField(10);
 		final JTextField addictField = new JTextField(10);
 		final JTextField cashAmountField = new JTextField(10);
 		final JTextField cocaineAmountField = new JTextField(10);
+		final JTextField addictAmountPayField = new JTextField(10);
 		
 		// Title
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -76,21 +72,6 @@ public class makeDistTransInterface {
 		c.fill = GridBagConstraints.NONE;
 		gb.setConstraints(dealerField, c);
 		contentPane.add(dealerField);
-		
-		// druglord Label
-		JLabel druglordLabel = new JLabel("Druglord Username: ");
-		c.gridwidth = GridBagConstraints.RELATIVE;
-		c.insets = new Insets(10, 10, 5, 0);
-		gb.setConstraints(druglordLabel, c);
-		contentPane.add(druglordLabel);
-		
-		// druglord Text Field
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(10, 0, 5, 10);
-		c.weightx=1.;
-		c.fill = GridBagConstraints.NONE;
-		gb.setConstraints(druglordField, c);
-		contentPane.add(druglordField);
 		
 		// territory Label
 		JLabel territoryLabel = new JLabel("Territory: ");
@@ -152,6 +133,21 @@ public class makeDistTransInterface {
 		gb.setConstraints(cocaineAmountField, c);
 		contentPane.add(cocaineAmountField);
 		
+		// addictAmountPay Label
+		JLabel addictAmountPayLabel = new JLabel("Amount Addict Actually Pays: ");
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		c.insets = new Insets(10, 10, 5, 0);
+		gb.setConstraints(addictAmountPayLabel, c);
+		contentPane.add(addictAmountPayLabel);
+		
+		// addictAmountPay Text Field
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(10, 0, 5, 10);
+		c.weightx=1.;
+		c.fill = GridBagConstraints.NONE;
+		gb.setConstraints(addictAmountPayField, c);
+		contentPane.add(addictAmountPayField);
+		
 		//execute Button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
@@ -182,22 +178,22 @@ public class makeDistTransInterface {
 		executeButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String dealer = dealerField.getText();
-				String druglord = druglordField.getText();
 				String territory = territoryField.getText();
 				String addict = addictField.getText();
 				String cashAmount = cashAmountField.getText();
 				String cocaineAmount = cocaineAmountField.getText();
+				String addictAmountPay = addictAmountPayField.getText();
 				
-				executeTrans(dealer, druglord, territory, addict, cashAmount, cocaineAmount);
+				executeTrans(dealer, territory, addict, cashAmount, cocaineAmount, addictAmountPay);
 			}
 			
-			private void executeTrans(String dealer, String druglord, String territory, String addict, String cashAmount, String cocaineAmount) {
-				System.out.println("Dealer: " + dealer + " DrugLord: " + druglord + " Territory: " + territory + " Addict: " + addict + " cashAmount: " + cashAmount + " cocaineAmount: " + cocaineAmount);
+			private void executeTrans(String dealer, String territory, String addict, String cashAmount, String cocaineAmount, String addictAmountPay) {
+//				System.out.println("Dealer: " + dealer + " Territory: " + territory + " Addict: " + addict + " cashAmount: " + cashAmount + " cocaineAmount: " + cocaineAmount + " Addict Payment: " + addictAmountPay);
 				int did = -1;
-				int dlid = -1;
 				int tid = -1;
 				int aid = -1;
 				int dlCocaine = -1;
+				int payment = Integer.parseInt(addictAmountPay);
 				try {
 					List<DealerData> dealerData = DataQueries.findDealersByExactName(dealer);
 					System.out.println(dealerData);
@@ -206,14 +202,6 @@ public class makeDistTransInterface {
 						dlCocaine = dealerData.get(0).cocaine;
 					} else {
 						errorMsg.setText("Invalid Dealer username");
-						return;
-					}
-					
-					List<DrugLordData> druglordData = DataQueries.findDruglordsByExactUsername(druglord);
-					if (druglordData.size() == 1) {
-						dlid = druglordData.get(0).DLID;
-					} else {
-						errorMsg.setText("Invalid Druglord username");
 						return;
 					}
 					
@@ -236,8 +224,14 @@ public class makeDistTransInterface {
 					if (dlCocaine - Integer.parseInt(cocaineAmount) < 0) {
 						errorMsg.setText("Not enough cocaine");
 						return;
+					} else if(payment < 0) {
+						errorMsg.setText("Non-sensical Addict Payment (must be non-negative)");
+						return;
+					} else if(payment > Integer.parseInt(cashAmount)) {
+						errorMsg.setText("Non-sensical Addict Payment (can't be more than Cash Amount)");
+						return;
 					} else {
-						if (DataQueries.makeDistTrans(Integer.toString(did), Integer.toString(dlid), Integer.toString(tid), Integer.toString(aid), cashAmount, cocaineAmount)){
+						if (DataQueries.makeDistTrans(Integer.toString(did), Integer.toString(tid), Integer.toString(aid), cashAmount, cocaineAmount, payment)){
 							errorMsg.setText("Success!");
 						} else {
 							errorMsg.setText("Oops! Something went wrong :(");
