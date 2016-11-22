@@ -145,15 +145,6 @@ public class giveDealersDrugsInteface {
 				int druglordCocaine = -1;
 				int dealerCashLeft = -1;
 				try {
-					List<DealerData> dealerData = DataQueries.findDealersByExactName(dealer);
-					if (dealerData.size() == 1) {
-						did = dealerData.get(0).DID;
-						dealerCashLeft = dealerData.get(0).cash;
-					} else {
-						errorMsg.setText("Invalid Dealer username");
-						return;
-					}
-					
 					List<DrugLordData> druglordData = DataQueries.findDruglordsByExactUsername(user);
 					if (druglordData.size() == 1) {
 						dlid = druglordData.get(0).DLID;
@@ -162,6 +153,17 @@ public class giveDealersDrugsInteface {
 						errorMsg.setText("Invalid Druglord username");
 						return;
 					}
+					
+					List<DealerData> dealerData = DataQueries.findDealersByExactNameAndDLID(dealer,Integer.toString(dlid));
+					if (dealerData.size() == 1) {
+						did = dealerData.get(0).DID;
+						dealerCashLeft = dealerData.get(0).cash;
+					} else {
+						errorMsg.setText("Invalid Dealer username (Reminder: must be your dealer)");
+						return;
+					}
+					
+					
 					
 					if (druglordCocaine - Integer.parseInt(cocaineAmount) < 0) {
 						errorMsg.setText("Druglord does not have enough cocaine");

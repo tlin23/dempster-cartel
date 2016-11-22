@@ -231,6 +231,15 @@ public class DataQueries {
 			return getDealers(rs);
 		}
 	}
+	
+	public static List<DealerData> findDealersByExactNameAndDLID(String name, String dlid) throws SQLException {
+		String searchName = "'" + name.toUpperCase() + "'";
+		String getDealerStmnt = "SELECT * FROM Dealer WHERE UPPER(dUserName) Like " + searchName + "AND DLID = " + dlid;
+		try(Statement st = con.createStatement()){
+			ResultSet rs = st.executeQuery(getDealerStmnt);
+			return getDealers(rs);
+		}
+	}
 
 	private static List<SupplierData> getSuppliers(ResultSet results) throws SQLException {
 		List<SupplierData> l = new ArrayList<>();
