@@ -58,7 +58,6 @@ public class DataQueries {
 	public static List<DrugLordData> findDruglordsByExactUsername(String name) throws SQLException {
 		String searchName = "'" + name.toUpperCase() + "'";
 		String getDruglordStmnt = "SELECT * FROM Druglord WHERE UPPER(dlusername) Like " + searchName;
-		System.out.println(getDruglordStmnt);
 		try(Statement st = con.createStatement()){
 			ResultSet rs = st.executeQuery(getDruglordStmnt);
 			return getDruglords(rs);
@@ -547,6 +546,21 @@ public class DataQueries {
 				st.executeQuery(dealerTakeMoneyStmnt);
 			}
 		}
+		return true;
+	}
+	
+	
+	public static boolean giveDealerDrugs(String did, String dlid,String cashAmount, String cocaineAmount) throws SQLException {
+		// minus cocaine and add cash
+		String updateDruglordStmnt = "UPDATE DRUGLORD SET Cash = Cash + " + cashAmount  + ", Cocaine = Cocaine - " + cocaineAmount + " WHERE DLID = " + dlid;
+		// add cocaine and minus cash
+		String updateDealerStmnt = "UPDATE DEALER SET Cash = Cash - " + cashAmount  + ", Cocaine = Cocaine + " + cocaineAmount + " WHERE DLID = " + did;;
+
+		try(Statement st = con.createStatement()){
+			st.executeQuery(updateDruglordStmnt);
+			st.executeQuery(updateDealerStmnt);
+		}
+
 		return true;
 	}
 

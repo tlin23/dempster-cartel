@@ -14,13 +14,8 @@ public class druglordViewInterface {
 	
 	// Window Frames in Drug lord UI
 	private JFrame mainFrame;
-	private Connection clientcon;
-	private String user;
 	
-	public druglordViewInterface(final Connection con){
-		System.out.println("\nLogged in as Druglord");
-		clientcon = con;
-		this.user = user;
+	public druglordViewInterface(final Connection con, final String user){
 		
 		mainFrame = new JFrame("Druglord View");
 		JPanel contentPane = new JPanel();
@@ -215,7 +210,7 @@ public class druglordViewInterface {
 				contentPane.setLayout(layout);
 				contentPane.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 				
-				String[] colNames = { "Name" };
+				String[] colNames = { "Name", "Debt" };
 				DefaultTableModel model = new DefaultTableModel() {
 					public boolean isCellEditable(int rowIndex, int ColIndex) {
 						return false;
@@ -236,6 +231,7 @@ public class druglordViewInterface {
 					for (AddictData a : addictData) {
 						Object[] o = new Object[2];
 						o[0] = a.name;
+						o[1] = a.cash;
 						model.addRow(o);
 					}
 				}
@@ -347,8 +343,6 @@ public class druglordViewInterface {
 				
 				try {
 					List<DrugLordData> druglordData = DataQueries.getDruglords();
-					System.out.print("poop ");
-					System.out.println(druglordData.size());
 					for (DrugLordData dl : druglordData) {
 						Object[] o = new Object[3];
 						o[0] = dl.name;
@@ -613,7 +607,7 @@ public class druglordViewInterface {
 		viewTotalCashDealers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 //				showTotalCashDealers();
-				new totalCashDealersInterface(con);
+				new totalCashDealersInterface(con,user);
 				mainFrame.dispose(); //not yet
 			}
 		});
@@ -794,35 +788,35 @@ public class druglordViewInterface {
 		
 		findDruglord.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new findDruglordInterface(con);
+				new findDruglordInterface(con,user);
 				mainFrame.dispose();
 			}
 		});
 		
 		findDealer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new findDealerInterface(con);
+				new findDealerInterface(con, user);
 				mainFrame.dispose();
 			}
 		});
 		
 		findSupplier.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new findSupplierInterface(con);
+				new findSupplierInterface(con, user);
 				mainFrame.dispose();
 			}
 		});
 
 		findAddict.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new findAddictInterface(con);
+				new findAddictInterface(con, user);
 				mainFrame.dispose();
 			}
 		});
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new drugLordInterface(con);
+				new drugLordInterface(con, user);
 				mainFrame.dispose();
 			}
 		});

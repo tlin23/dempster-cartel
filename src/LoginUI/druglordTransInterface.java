@@ -15,11 +15,9 @@ public class druglordTransInterface {
 	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
-	private String user;
 	
-	public druglordTransInterface(final Connection con){
+	public druglordTransInterface(final Connection con, final String user){
 		clientcon = con;
-		this.user = user;
 		
 		mainFrame = new JFrame("Druglord Transaction View");
 		JPanel contentPane = new JPanel();
@@ -33,6 +31,7 @@ public class druglordTransInterface {
 		
 		JButton exitButton = new JButton("Back");
 		JButton makeSupplyTrans = new JButton("Make Supply Transaction");
+		JButton giveDealersDrugs = new JButton("Give Dealer Drugs");
 		JLabel addictView = new JLabel ("Druglord Transaction View");
 		
 		// Title
@@ -41,7 +40,7 @@ public class druglordTransInterface {
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
 		
-		//view Addicts button
+		//makeSupplyTrans button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
 		c.weightx= 0;
@@ -50,6 +49,15 @@ public class druglordTransInterface {
 		gb.setConstraints(makeSupplyTrans, c);
 		contentPane.add(makeSupplyTrans);
 	
+		//giveDealerDrugs button
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(5, 10, 10, 10);
+		c.weightx= 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.CENTER;
+		gb.setConstraints(giveDealersDrugs, c);
+		contentPane.add(giveDealersDrugs);
+		
 		//exit button
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(5, 10, 10, 10);
@@ -61,14 +69,21 @@ public class druglordTransInterface {
 		
 		makeSupplyTrans.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new makeSupplyTransInterface(con);
+				new makeSupplyTransInterface(con,user);
+				mainFrame.dispose(); //not yet
+			}
+		});
+		
+		giveDealersDrugs.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				new giveDealersDrugsInteface(con,user);
 				mainFrame.dispose(); //not yet
 			}
 		});
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new drugLordInterface(con);
+				new drugLordInterface(con,user);
 				mainFrame.dispose();
 			}
 		});

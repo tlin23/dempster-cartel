@@ -122,7 +122,7 @@ public class dlLoginInterface {
 						String dBPass = rs.getString("password");
 						if(dBPass.equals(pass)){
 							Connection con1 = con;
-							new drugLordInterface(con1);
+							new drugLordInterface(con1,user);
 							mainFrame.dispose();
 						}else{
 							errorMsg.setText("Invalid Username");

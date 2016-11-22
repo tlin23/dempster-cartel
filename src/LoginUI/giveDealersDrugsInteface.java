@@ -1,26 +1,38 @@
 package LoginUI;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
-import querySet.*;
 
-public class makeSupplyTransInterface {
-	
-	// Window Frames in Druglord UI
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import querySet.AddictData;
+import querySet.DataQueries;
+import querySet.DealerData;
+import querySet.DrugLordData;
+import querySet.TerritoryData;
+
+public class giveDealersDrugsInteface {
 	private JFrame mainFrame;
 	private Connection clientcon;
 	
-	public makeSupplyTransInterface(final Connection con,final String user){
+	public giveDealersDrugsInteface(final Connection con,final String user){
 		clientcon = con;
-
 		
-		mainFrame = new JFrame("Druglord Make Supply Transaction View");
+		mainFrame = new JFrame("Give Dealer Drugs");
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
 		
@@ -32,11 +44,11 @@ public class makeSupplyTransInterface {
 		
 		JButton exitButton = new JButton("Back");
 		JButton executeButton = new JButton("Execute");
-		JLabel addictView = new JLabel ("Supply Transaction");
-		final JTextField supplierField = new JTextField(10);
-		final JTextField druglordField = new JTextField(10);
+		JLabel addictView = new JLabel ("Give Dealer Drugs");
+		final JTextField dealerField = new JTextField(10);
 		final JTextField cashAmountField = new JTextField(10);
 		final JTextField cocaineAmountField = new JTextField(10);
+
 		
 		// Title
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -44,35 +56,20 @@ public class makeSupplyTransInterface {
 		gb.setConstraints(addictView,c);
 		contentPane.add(addictView);
 		
-		// supplier Label
-		JLabel supplierLabel = new JLabel("Supplier Name: ");
+		// dealer Label
+		JLabel dealerLabel = new JLabel("Dealer Username: ");
 		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.insets = new Insets(10, 10, 5, 0);
-		gb.setConstraints(supplierLabel, c);
-		contentPane.add(supplierLabel);
+		gb.setConstraints(dealerLabel, c);
+		contentPane.add(dealerLabel);
 		
-		// supplier Text Field
+		// dealer Text Field
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.insets = new Insets(10, 0, 5, 10);
 		c.weightx=1.;
 		c.fill = GridBagConstraints.NONE;
-		gb.setConstraints(supplierField, c);
-		contentPane.add(supplierField);
-		
-		// druglord Label
-		JLabel druglordLabel = new JLabel("Druglord Username: ");
-		c.gridwidth = GridBagConstraints.RELATIVE;
-		c.insets = new Insets(10, 10, 5, 0);
-		gb.setConstraints(druglordLabel, c);
-		contentPane.add(druglordLabel);
-		
-		// druglord Text Field
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(10, 0, 5, 10);
-		c.weightx=1.;
-		c.fill = GridBagConstraints.NONE;
-		gb.setConstraints(druglordField, c);
-		contentPane.add(druglordField);
+		gb.setConstraints(dealerField, c);
+		contentPane.add(dealerField);
 		
 		// cash Label
 		JLabel cashLabel = new JLabel("Cash Amount: ");
@@ -133,41 +130,47 @@ public class makeSupplyTransInterface {
 		
 		executeButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				String supplier = supplierField.getText();
-				String druglord = druglordField.getText();
+				String dealer = dealerField.getText();
 				String cashAmount = cashAmountField.getText();
 				String cocaineAmount = cocaineAmountField.getText();
 				
-				executeTrans(supplier, druglord, cashAmount, cocaineAmount);
+				executeTrans(dealer,cashAmount, cocaineAmount);
 			}
 			
-			private void executeTrans(String supplier, String druglord, String cashAmount, String cocaineAmount) {
-				System.out.println("Supplier: " + supplier + " Druglord: " + druglord + " cashAmount: " + cashAmount + " cocaineAmount: " + cocaineAmount);
-				int sid = -1;
+			private void executeTrans(String dealer, String cashAmount, String cocaineAmount) {
+				int did = -1;
 				int dlid = -1;
-				int dlCash = -1;
+				int tid = -1;
+				int aid = -1;
+				int druglordCocaine = -1;
+				int dealerCashLeft = -1;
 				try {
-					List<SupplierData> supplierData = DataQueries.findSuppliersByExactName(supplier);
-					if (supplierData.size() == 1) {
-						sid = supplierData.get(0).SID;
+					List<DealerData> dealerData = DataQueries.findDealersByExactName(dealer);
+					if (dealerData.size() == 1) {
+						did = dealerData.get(0).DID;
+						dealerCashLeft = dealerData.get(0).cash;
 					} else {
-						errorMsg.setText("Invalid supplier name");
+						errorMsg.setText("Invalid Dealer username");
 						return;
 					}
 					
-					List<DrugLordData> druglordData = DataQueries.findDruglordsByExactUsername(druglord);
+					List<DrugLordData> druglordData = DataQueries.findDruglordsByExactUsername(user);
 					if (druglordData.size() == 1) {
 						dlid = druglordData.get(0).DLID;
-						dlCash = druglordData.get(0).cash;
+						druglordCocaine = druglordData.get(0).cocaine;
 					} else {
 						errorMsg.setText("Invalid Druglord username");
 						return;
 					}
-					if (dlCash - Integer.parseInt(cashAmount) < 0) {
-						errorMsg.setText("Not enough cash");
+					
+					if (druglordCocaine - Integer.parseInt(cocaineAmount) < 0) {
+						errorMsg.setText("Druglord does not have enough cocaine");
+						return;
+					} else if (dealerCashLeft - Integer.parseInt(cashAmount) < 0) {
+						errorMsg.setText("Dealer does not have enough cash");
 						return;
 					} else {
-						if (DataQueries.makeSupplyTrans(Integer.toString(sid), Integer.toString(dlid), cashAmount, cocaineAmount)){
+						if (DataQueries.giveDealerDrugs(Integer.toString(did), Integer.toString(dlid), cashAmount, cocaineAmount)){
 							errorMsg.setText("Success!");
 						} else {
 							errorMsg.setText("Oops! Something went wrong :(");
@@ -184,7 +187,7 @@ public class makeSupplyTransInterface {
 				
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordTransInterface(con,user);
+				new drugLordInterface(con,user);
 				mainFrame.dispose();
 			}
 		});
@@ -199,5 +202,5 @@ public class makeSupplyTransInterface {
 	    
 	    //other default window features
 	    mainFrame.setVisible(true);	
-	}
+	}	
 }

@@ -30,11 +30,10 @@ public class totalCashDealersInterface {
 	// Window Frames in totalCashDealers UI
 	private JFrame mainFrame;
 	private Connection clientcon;
-	private String user;
+
 	
-	public totalCashDealersInterface(final Connection con){
+	public totalCashDealersInterface(final Connection con,final String user){
 		clientcon = con;
-		this.user = user;
 		
 		mainFrame = new JFrame("View Total Money To Collect From Dealers (and their Addicts)");
 		JPanel contentPane = new JPanel();
@@ -153,7 +152,7 @@ public class totalCashDealersInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
+				new druglordViewInterface(con,user);
 				mainFrame.dispose();
 			}
 		});

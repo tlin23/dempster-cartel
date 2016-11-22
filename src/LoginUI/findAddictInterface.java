@@ -15,12 +15,10 @@ public class findAddictInterface {
 	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
-	private String user;
 	
-	public findAddictInterface(final Connection con){
+	public findAddictInterface(final Connection con, final String user){
 		clientcon = con;
-		this.user = user;
-		
+
 		mainFrame = new JFrame("Druglord Find Addict View");
 		JPanel contentPane = new JPanel();
 		mainFrame.setContentPane(contentPane);
@@ -305,7 +303,7 @@ public class findAddictInterface {
 				
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
+				new druglordViewInterface(con,user);
 				mainFrame.dispose();
 			}
 		});

@@ -17,7 +17,7 @@ public class findDealerInterface {
 	private Connection clientcon;
 	private String user;
 	
-	public findDealerInterface(final Connection con){
+	public findDealerInterface(final Connection con, final String user){
 		clientcon = con;
 		this.user = user;
 		
@@ -472,7 +472,7 @@ public class findDealerInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
+				new druglordViewInterface(con,user);
 				mainFrame.dispose();
 			}
 		});

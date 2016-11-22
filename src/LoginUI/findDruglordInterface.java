@@ -17,7 +17,7 @@ public class findDruglordInterface {
 	private Connection clientcon;
 	private String user;
 	
-	public findDruglordInterface(final Connection con){
+	public findDruglordInterface(final Connection con,final String user){
 		clientcon = con;
 		this.user = user;
 		
@@ -471,7 +471,7 @@ public class findDruglordInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
+				new druglordViewInterface(con,user);
 				mainFrame.dispose();
 			}
 		});

@@ -15,11 +15,9 @@ public class findSupplierInterface {
 	// Window Frames in Druglord UI
 	private JFrame mainFrame;
 	private Connection clientcon;
-	private String user;
 	
-	public findSupplierInterface(final Connection con){
+	public findSupplierInterface(final Connection con,final String user){
 		clientcon = con;
-		this.user = user;
 		
 		mainFrame = new JFrame("Druglord Find Supplier View");
 		JPanel contentPane = new JPanel();
@@ -135,7 +133,7 @@ public class findSupplierInterface {
 		
 		exitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new druglordViewInterface(con);
+				new druglordViewInterface(con,user);
 				mainFrame.dispose();
 			}
 		});
